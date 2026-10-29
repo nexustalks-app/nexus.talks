@@ -25,6 +25,62 @@
         android:progressTint="@color/nexus_wine"
         android:visibility="gone" />
 
+    <!-- Recoverable Network / Server Error Screen -->
+    <LinearLayout
+        android:id="@+id/errorContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:background="@color/nexus_porcelain"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/ic_launcher_playstore"
+            android:contentDescription="@string/app_name"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:id="@+id/textErrorTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/error_title"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/nexus_charcoal"
+            android:gravity="center"
+            android:letterSpacing="-0.01" />
+
+        <TextView
+            android:id="@+id/textErrorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/error_message"
+            android:textSize="14sp"
+            android:textColor="@color/nexus_charcoal"
+            android:alpha="0.75"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="24dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:minWidth="160dp"
+            android:text="@string/error_retry"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/nexus_wine"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:cornerRadius="12dp" />
+
+    </LinearLayout>
+
     <!-- Configurable Staging Setup Screen (Shown only when no valid URL is configured) -->
     <ScrollView
         android:id="@+id/setupContainer"
