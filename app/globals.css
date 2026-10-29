@@ -1,0 +1,1016 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Nexus.talks — Modern Wine & Porcelain Tokens ─────────────────────── */
+
+:root {
+  /* Surfaces — Clean, Luminous Modern Wine & Porcelain */
+  --rail-bg:          #FFFFFF;
+  --pane-list-bg:     #F9F8F6; /* Luminous, crisp porcelain */
+  --pane-chat-bg:     #FFFFFF; /* Pure White */
+  --pane-details-bg:  #FFFFFF; /* Pure White */
+
+  /* Base surfaces */
+  --background:       #F9F8F6; /* Modern crisp porcelain */
+  --background-alt:   #F2EFEB;
+  --surface:          #FFFFFF; /* Pure White */
+  --surface-raised:   #FFFFFF;
+  --surface-subtle:   #FAF8F6;
+  --surface-overlay:  rgba(255, 255, 255, 0.98);
+
+  /* Row / interaction states */
+  --row-hover:        #F2EFEB;
+  --row-active:       #EBE6E1;
+  --field-bg:         #FFFFFF;
+  --on-accent:        #FFFFFF;
+
+  /* Borders — Crisp Architectural Hairline Stone */
+  --border:           #E5E0DC;
+  --border-subtle:    #ECE8E5;
+  --border-strong:    #D4CDC7;
+
+  /* Typography — Razor-Sharp Obsidian-Charcoal & High-Contrast Muted */
+  --foreground:       #161315; /* Obsidian Charcoal */
+  --foreground-muted: #575054; /* Readable, crisp secondary */
+  --foreground-faint: #7C7479;
+  --foreground-ghost: #A89FA4;
+
+  /* Accents — Saturated Deep Wine & Rich Burgundy */
+  --accent:           #582030; /* Saturated Deep Wine */
+  --accent-hover:     #702A3E; /* Rich Burgundy */
+  --accent-soft:      rgba(88, 32, 48, 0.08);
+  --accent-rose:      #A77982; /* Muted Rose */
+  --accent-rose-soft: rgba(167, 121, 130, 0.12);
+
+  /* Sidebar */
+  --sidebar-bg:       #FFFFFF;
+  --sidebar-border:   #E5E0DC;
+  --sidebar-width:    280px;
+  --sidebar-width-sm: 72px;
+
+  /* Chat surfaces & tokens (Nexus.talks Porcelain Light) */
+  --chat-header-bg:        #FAF7F5;
+  --chat-composer-bg:      #FAF7F5;
+  --chat-divider:          #EBE3E0;
+  --message-incoming-bg:   #F2ECE9;
+  --message-incoming-text: #1F161A;
+  --message-outgoing-bg:   #631D35;
+  --message-outgoing-text: #FFFFFF;
+  --message-incoming-border: rgba(0, 0, 0, 0.05);
+  --message-outgoing-border: rgba(99, 29, 53, 0.25);
+  --message-bubble-shadow: 0 1px 2px rgba(20, 10, 15, 0.06);
+
+  /* Chat bubbles */
+  --bubble-own-bg:       #631D35; /* Restrained Deep Wine / Burgundy */
+  --bubble-own-text:     #FFFFFF;
+  --bubble-own-border:   rgba(99, 29, 53, 0.25);
+  --bubble-own-gradient: linear-gradient(135deg, #631D35 0%, #702A3E 50%, #631D35 100%);
+  --bubble-own-shadow:   0 1px 2px rgba(20, 10, 15, 0.06);
+  --bubble-other-bg:     #F2ECE9; /* Warm Porcelain Card */
+  --bubble-other-text:   #1F161A; /* Crisp high-contrast obsidian text */
+  --bubble-other-border: rgba(0, 0, 0, 0.05);
+
+  /* Status */
+  --status-online:    #2E7D5B; /* Modern emerald */
+  --status-away:      #D97706; /* Modern amber */
+  --status-offline:   #A09A9E;
+
+  /* Layout dimensions */
+  --list-width:       360px;
+  --panel-width:      320px;
+
+  /* Signature Glass UI 2.0 Tokens */
+  --glass-bg:              rgba(255, 255, 255, 0.88);
+  --glass-bg-subtle:       rgba(255, 255, 255, 0.70);
+  --glass-bg-wine:         rgba(88, 32, 48, 0.07);
+  --glass-border:          rgba(229, 224, 220, 0.85);
+  --glass-border-wine:     rgba(88, 32, 48, 0.16);
+  --glass-blur:            14px;
+  --glass-shadow:          0 8px 30px -4px rgba(35, 15, 22, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  --glass-specular:        inset 0 1px 0 0 rgba(255, 255, 255, 0.80);
+
+  /* ─── Liquid Glass Floating Navigation Tokens (Light) ────────────────── */
+  --liquid-dock-bg:        rgba(255, 255, 255, 0.82);
+  --liquid-dock-bg-hover:  rgba(255, 255, 255, 0.94);
+  --liquid-dock-border:    rgba(255, 255, 255, 0.95);
+  --liquid-dock-border-glow: rgba(99, 29, 53, 0.35);
+  --liquid-dock-specular:  inset 0 1.5px 1px 0 rgba(255, 255, 255, 1), inset 0 -1.5px 1px 0 rgba(99, 29, 53, 0.05);
+  --liquid-dock-shadow:    0 0 0 1px rgba(220, 214, 210, 0.65), 0 20px 48px -10px rgba(99, 29, 53, 0.16), 0 8px 20px -4px rgba(35, 15, 22, 0.08);
+  --liquid-desktop-bg:        linear-gradient(180deg, rgba(255, 255, 255, 0.90) 0%, rgba(250, 247, 245, 0.75) 50%, rgba(255, 255, 255, 0.86) 100%);
+  --liquid-desktop-border:    rgba(255, 255, 255, 0.95);
+  --liquid-desktop-specular:  inset 0 2px 1.5px 0 rgba(255, 255, 255, 1), inset 1px 0 1px 0 rgba(255, 255, 255, 0.80), inset -1px 0 1px 0 rgba(255, 255, 255, 0.60), inset 0 -2px 1px 0 rgba(99, 29, 53, 0.08);
+  --liquid-desktop-shadow:    0 0 0 1px rgba(220, 214, 210, 0.65), 0 24px 52px -10px rgba(99, 29, 53, 0.18), 0 10px 24px -4px rgba(35, 15, 22, 0.08);
+  --liquid-item-active-bg: linear-gradient(135deg, #7A2840 0%, #631D35 60%, #4D1526 100%);
+  --liquid-item-active-fg: #FFFFFF;
+  --liquid-item-hover-bg:  rgba(99, 29, 53, 0.09);
+
+  /* Motion System 1.0, 2.0 & 3.0 Tokens */
+  --ease-spring:      cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth:      cubic-bezier(0.2, 0, 0, 1);
+  --ease-standard:    cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast:         100ms;
+  --dur-normal:       160ms;
+  --dur-page:         240ms;
+  --dur-micro:        120ms;
+  --dur-control:      150ms;
+  --dur-enter:        180ms;
+  --dur-dialog:       200ms;
+
+  /* Living Canvas Pattern (Porcelain Light) */
+  --canvas-pattern:   url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22220%22 height=%22220%22 viewBox=%220 0 220 220%22 fill=%22none%22%3E%0A  %3C!-- Motif 1: Signature Nexus Star %26 Ring at (40%2C 45) --%3E%0A  %3Ccircle cx=%2240%22 cy=%2245%22 r=%2217%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.25%22 stroke-dasharray=%223 3.5%22/%3E%0A  %3Cpath d=%22M 40 35 L 41.8 43.2 L 50 45 L 41.8 46.8 L 40 55 L 38.2 46.8 L 30 45 L 38.2 43.2 Z%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%2257%22 cy=%2245%22 r=%222.0%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%2227%22 cy=%2254%22 r=%221.6%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A%0A  %3C!-- Motif 2: Constellation Triad of Connection at (165%2C 35) --%3E%0A  %3Cpath d=%22M 148 47 L 176 28 L 188 56 Z%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.20%22/%3E%0A  %3Ccircle cx=%22148%22 cy=%2247%22 r=%222.0%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%22176%22 cy=%2228%22 r=%222.2%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%22188%22 cy=%2256%22 r=%221.8%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A%0A  %3C!-- Motif 3: Flowing Orbital Resonance Arc at (120%2C 110) --%3E%0A  %3Cpath d=%22M 82 132 C 108 92 148 92 174 126%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.30%22/%3E%0A  %3Ccircle cx=%22128%22 cy=%22101%22 r=%222.0%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%2298%22 cy=%22123%22 r=%221.5%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A%0A  %3C!-- Motif 4: Micro Nexus 4-Point Spark at (185%2C 160) --%3E%0A  %3Cpath d=%22M 185 151 L 186.5 158.5 L 194 160 L 186.5 161.5 L 185 169 L 183.5 161.5 L 176 160 L 183.5 158.5 Z%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%22198%22 cy=%22150%22 r=%221.5%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A%0A  %3C!-- Motif 5: Connected Binary Nodes at (55%2C 165) --%3E%0A  %3Cline x1=%2240%22 y1=%22165%22 x2=%2270%22 y2=%22165%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.25%22 stroke-dasharray=%223 2.5%22/%3E%0A  %3Ccircle cx=%2240%22 cy=%22165%22 r=%222.2%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%2270%22 cy=%22165%22 r=%222.2%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%2255%22 cy=%22153%22 r=%221.4%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A%0A  %3C!-- Motif 6: Seamless Edge Wrapping Elements --%3E%0A  %3C!-- Horizontal seam wrap at y=110 --%3E%0A  %3Ccircle cx=%220%22 cy=%22110%22 r=%222.0%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%22110%22 r=%222.0%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Cpath d=%22M -16 98 Q 16 110 -16 122%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.20%22/%3E%0A  %3Cpath d=%22M 204 98 Q 236 110 204 122%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.20%22/%3E%0A%0A  %3C!-- Vertical seam wrap at x=110 --%3E%0A  %3Ccircle cx=%22110%22 cy=%220%22 r=%222.0%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%22110%22 cy=%22220%22 r=%222.0%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Cpath d=%22M 98 -14 L 110 0 L 128 -9%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.20%22/%3E%0A  %3Cpath d=%22M 98 206 L 110 220 L 128 211%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.20%22/%3E%0A%0A  %3C!-- Corner wrapping: meets into a complete ring at corners --%3E%0A  %3Ccircle cx=%220%22 cy=%220%22 r=%221.8%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%220%22 r=%221.8%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%220%22 cy=%22220%22 r=%221.8%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%22220%22 r=%221.8%22 fill=%22rgba(88%2C32%2C48%2C0.165)%22/%3E%0A  %3Cpath d=%22M 0 12 A 12 12 0 0 0 12 0%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.15%22/%3E%0A  %3Cpath d=%22M 220 12 A 12 12 0 0 1 208 0%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.15%22/%3E%0A  %3Cpath d=%22M 0 208 A 12 12 0 0 1 12 220%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.15%22/%3E%0A  %3Cpath d=%22M 220 208 A 12 12 0 0 0 208 220%22 stroke=%22rgba(88%2C32%2C48%2C0.165)%22 stroke-width=%221.15%22/%3E%0A%3C/svg%3E");
+}
+
+/* ─── Nexus.talks — Obsidian-Wine Dark Theme (Clean & Rich) ───────────── */
+
+.dark {
+  /* Surfaces — Obsidian foundations with deep wine accents */
+  --rail-bg:          #120E11;
+  --pane-list-bg:     #140F13;
+  --pane-chat-bg:     #0E0B0D;
+  --pane-details-bg:  #140F13;
+
+  /* Signature Glass UI 2.0 Dark Tokens */
+  --glass-bg:              rgba(23, 17, 21, 0.88);
+  --glass-bg-subtle:       rgba(18, 14, 17, 0.75);
+  --glass-bg-wine:         rgba(142, 52, 78, 0.16);
+  --glass-border:          rgba(255, 255, 255, 0.09);
+  --glass-border-wine:     rgba(166, 63, 92, 0.28);
+  --glass-blur:            14px;
+  --glass-shadow:          0 8px 32px -4px rgba(0, 0, 0, 0.60), 0 2px 6px -1px rgba(0, 0, 0, 0.4);
+  --glass-specular:        inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+
+  /* ─── Liquid Glass Floating Navigation Tokens (Dark) ─────────────────── */
+  --liquid-dock-bg:        rgba(26, 17, 22, 0.85);
+  --liquid-dock-bg-hover:  rgba(34, 22, 29, 0.95);
+  --liquid-dock-border:    rgba(255, 255, 255, 0.14);
+  --liquid-dock-border-glow: rgba(192, 68, 101, 0.45);
+  --liquid-dock-specular:  inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.28), inset 0 -1.5px 1px 0 rgba(0, 0, 0, 0.60);
+  --liquid-dock-shadow:    0 0 0 1px rgba(255, 255, 255, 0.08), 0 28px 56px -10px rgba(0, 0, 0, 0.80), 0 12px 24px -4px rgba(0, 0, 0, 0.60);
+  --liquid-desktop-bg:        linear-gradient(180deg, rgba(34, 22, 29, 0.88) 0%, rgba(20, 13, 17, 0.78) 50%, rgba(30, 19, 26, 0.85) 100%);
+  --liquid-desktop-border:    rgba(255, 255, 255, 0.14);
+  --liquid-desktop-specular:  inset 0 2px 1.5px 0 rgba(255, 255, 255, 0.32), inset 1px 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 -2px 1px 0 rgba(0, 0, 0, 0.70);
+  --liquid-desktop-shadow:    0 0 0 1px rgba(255, 255, 255, 0.08), 0 30px 60px -10px rgba(0, 0, 0, 0.85), 0 12px 26px -4px rgba(0, 0, 0, 0.65);
+  --liquid-item-active-bg: linear-gradient(135deg, #A23652 0%, #8E344E 60%, #6E223B 100%);
+  --liquid-item-active-fg: #FFFFFF;
+  --liquid-item-hover-bg:  rgba(166, 63, 92, 0.26);
+
+  /* Base surfaces */
+  --background:       #0E0B0D; /* Deep Obsidian */
+  --background-alt:   #140F13;
+  --surface:          #1A1418; /* Elevated crisp dark surface */
+  --surface-raised:   #231B21;
+  --surface-subtle:   #130E12;
+  --surface-overlay:  rgba(14, 11, 13, 0.98);
+
+  /* Row / interaction states */
+  --row-hover:        #20181E;
+  --row-active:       #2A1F27;
+  --field-bg:         #151014;
+  --on-accent:        #FFFFFF;
+
+  /* Borders */
+  --border:           #2A1F25;
+  --border-subtle:    #20171D;
+  --border-strong:    #3D2D37;
+
+  /* Typography — Crisp High Contrast */
+  --foreground:       #FAF7F9; /* Crisp White */
+  --foreground-muted: #A69BA1; /* High-contrast readable secondary */
+  --foreground-faint: #7A7076;
+  --foreground-ghost: #544A50;
+
+  /* Accents — Glowing Wine Jewel Tones */
+  --accent:           #8E344E; /* Glowing Wine */
+  --accent-hover:     #A63F5C;
+  --accent-soft:      rgba(142, 52, 78, 0.22);
+  --accent-rose:      #CFA4AD;
+  --accent-rose-soft: rgba(207, 164, 173, 0.18);
+
+  /* Sidebar */
+  --sidebar-bg:       #140F13;
+  --sidebar-border:   #2A1F25;
+
+  /* Chat surfaces & tokens (Nexus.talks Obsidian-Wine Dark) */
+  --chat-header-bg:        rgba(26, 24, 29, 0.95);
+  --chat-composer-bg:      rgba(26, 24, 29, 0.95);
+  --chat-divider:          rgba(255, 255, 255, 0.06);
+  --message-incoming-bg:   #2b292f;
+  --message-incoming-text: #f3f1f4;
+  --message-outgoing-bg:   #5E1B32;
+  --message-outgoing-text: #FFFFFF;
+  --message-incoming-border: rgba(255, 255, 255, 0.06);
+  --message-outgoing-border: rgba(140, 45, 75, 0.40);
+  --message-bubble-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.25);
+
+  /* Chat bubbles */
+  --bubble-own-bg:       #582030; /* Restrained Deep Wine */
+  --bubble-own-text:     #FFFFFF;
+  --bubble-own-border:   rgba(255, 255, 255, 0.20);
+  --bubble-own-gradient: linear-gradient(135deg, #582030 0%, #632434 50%, #582030 100%);
+  --bubble-own-shadow:   0 3px 12px -2px rgba(88, 32, 48, 0.28), inset 0 1px 0 0 rgba(255, 255, 255, 0.20);
+  --bubble-other-bg:     #1A1418; /* Clean obsidian plum card */
+  --bubble-other-text:   #FAF7F9;
+  --bubble-other-border: rgba(255, 255, 255, 0.08);
+
+  /* Status */
+  --status-online:    #3FA378;
+  --status-away:      #E08A28;
+  --status-offline:   #73656C;
+
+  /* Living Canvas Pattern (Obsidian Dark) */
+  --canvas-pattern:   url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22220%22 height=%22220%22 viewBox=%220 0 220 220%22 fill=%22none%22%3E%0A  %3C!-- Motif 1: Signature Nexus Star %26 Ring at (40%2C 45) --%3E%0A  %3Ccircle cx=%2240%22 cy=%2245%22 r=%2217%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.30%22 stroke-dasharray=%223 3.5%22/%3E%0A  %3Cpath d=%22M 40 35 L 41.8 43.2 L 50 45 L 41.8 46.8 L 40 55 L 38.2 46.8 L 30 45 L 38.2 43.2 Z%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%2257%22 cy=%2245%22 r=%222.0%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%2227%22 cy=%2254%22 r=%221.6%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A%0A  %3C!-- Motif 2: Constellation Triad of Connection at (165%2C 35) --%3E%0A  %3Cpath d=%22M 148 47 L 176 28 L 188 56 Z%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.25%22/%3E%0A  %3Ccircle cx=%22148%22 cy=%2247%22 r=%222.0%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%22176%22 cy=%2228%22 r=%222.2%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%22188%22 cy=%2256%22 r=%221.8%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A%0A  %3C!-- Motif 3: Flowing Orbital Resonance Arc at (120%2C 110) --%3E%0A  %3Cpath d=%22M 82 132 C 108 92 148 92 174 126%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.35%22/%3E%0A  %3Ccircle cx=%22128%22 cy=%22101%22 r=%222.0%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%2298%22 cy=%22123%22 r=%221.5%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A%0A  %3C!-- Motif 4: Micro Nexus 4-Point Spark at (185%2C 160) --%3E%0A  %3Cpath d=%22M 185 151 L 186.5 158.5 L 194 160 L 186.5 161.5 L 185 169 L 183.5 161.5 L 176 160 L 183.5 158.5 Z%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%22198%22 cy=%22150%22 r=%221.5%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A%0A  %3C!-- Motif 5: Connected Binary Nodes at (55%2C 165) --%3E%0A  %3Cline x1=%2240%22 y1=%22165%22 x2=%2270%22 y2=%22165%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.30%22 stroke-dasharray=%223 2.5%22/%3E%0A  %3Ccircle cx=%2240%22 cy=%22165%22 r=%222.2%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%2270%22 cy=%22165%22 r=%222.2%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%2255%22 cy=%22153%22 r=%221.4%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A%0A  %3C!-- Motif 6: Seamless Edge Wrapping Elements --%3E%0A  %3C!-- Horizontal seam wrap at y=110 --%3E%0A  %3Ccircle cx=%220%22 cy=%22110%22 r=%222.0%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%22110%22 r=%222.0%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Cpath d=%22M -16 98 Q 16 110 -16 122%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.25%22/%3E%0A  %3Cpath d=%22M 204 98 Q 236 110 204 122%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.25%22/%3E%0A%0A  %3C!-- Vertical seam wrap at x=110 --%3E%0A  %3Ccircle cx=%22110%22 cy=%220%22 r=%222.0%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%22110%22 cy=%22220%22 r=%222.0%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Cpath d=%22M 98 -14 L 110 0 L 128 -9%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.25%22/%3E%0A  %3Cpath d=%22M 98 206 L 110 220 L 128 211%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.25%22/%3E%0A%0A  %3C!-- Corner wrapping: meets into a complete ring at corners --%3E%0A  %3Ccircle cx=%220%22 cy=%220%22 r=%221.8%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%220%22 r=%221.8%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%220%22 cy=%22220%22 r=%221.8%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%22220%22 r=%221.8%22 fill=%22rgba(235%2C175%2C190%2C0.20)%22/%3E%0A  %3Cpath d=%22M 0 12 A 12 12 0 0 0 12 0%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.20%22/%3E%0A  %3Cpath d=%22M 220 12 A 12 12 0 0 1 208 0%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.20%22/%3E%0A  %3Cpath d=%22M 0 208 A 12 12 0 0 1 12 220%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.20%22/%3E%0A  %3Cpath d=%22M 220 208 A 12 12 0 0 0 208 220%22 stroke=%22rgba(235%2C175%2C190%2C0.20)%22 stroke-width=%221.20%22/%3E%0A%3C/svg%3E");
+}
+
+/* ─── Theme 3: Midnight Wine (Rich Near-Black with Burgundy Layering) ─────── */
+
+[data-theme="midnight-wine"] {
+  --rail-bg:          #160B12;
+  --pane-list-bg:     #180C14;
+  --pane-chat-bg:     #10080D;
+  --pane-details-bg:  #180C14;
+
+  --background:       #10080D;
+  --background-alt:   #180C14;
+  --surface:          #20101B;
+  --surface-raised:   #2A1524;
+  --surface-subtle:   #140A10;
+  --surface-overlay:  rgba(16, 8, 13, 0.98);
+
+  --row-hover:        #261320;
+  --row-active:       #32192B;
+  --field-bg:         #190C15;
+  --on-accent:        #FFFFFF;
+
+  --border:           #381A2F;
+  --border-subtle:    #2B1424;
+  --border-strong:    #4E2240;
+
+  --foreground:       #FDF6F9;
+  --foreground-muted: #BFA8B5;
+  --foreground-faint: #8E7B86;
+  --foreground-ghost: #605159;
+
+  --accent:           #A23652;
+  --accent-hover:     #C04465;
+  --accent-soft:      rgba(162, 54, 82, 0.22);
+  --accent-rose:      #E0A8B6;
+  --accent-rose-soft: rgba(224, 168, 182, 0.18);
+
+  --sidebar-bg:       #180C14;
+  --sidebar-border:   #381A2F;
+
+  /* Chat surfaces & tokens (Nexus.talks Midnight Wine) */
+  --chat-header-bg:        rgba(26, 24, 29, 0.95);
+  --chat-composer-bg:      rgba(26, 24, 29, 0.95);
+  --chat-divider:          rgba(255, 255, 255, 0.08);
+  --message-incoming-bg:   #20101B;
+  --message-incoming-text: #FDF6F9;
+  --message-outgoing-bg:   #582030;
+  --message-outgoing-text: #FFFFFF;
+  --message-incoming-border: rgba(255, 255, 255, 0.09);
+  --message-outgoing-border: rgba(162, 54, 82, 0.30);
+  --message-bubble-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.30);
+
+  --bubble-own-bg:       #582030; /* Restrained Deep Wine */
+  --bubble-own-text:     #FFFFFF;
+  --bubble-own-border:   rgba(255, 255, 255, 0.20);
+  --bubble-own-gradient: linear-gradient(135deg, #582030 0%, #632434 50%, #582030 100%);
+  --bubble-own-shadow:   0 3px 12px -2px rgba(88, 32, 48, 0.32), inset 0 1px 0 0 rgba(255, 255, 255, 0.20);
+  --bubble-other-bg:     #20101B;
+  --bubble-other-text:   #FDF6F9;
+  --bubble-other-border: rgba(255, 255, 255, 0.09);
+
+  --liquid-dock-bg:        rgba(32, 16, 27, 0.88);
+  --liquid-dock-bg-hover:  rgba(42, 21, 36, 0.94);
+  --liquid-dock-border:    rgba(162, 54, 82, 0.26);
+  --liquid-dock-border-glow: rgba(192, 68, 101, 0.35);
+  --liquid-desktop-bg:     linear-gradient(180deg, rgba(42, 21, 36, 0.88) 0%, rgba(24, 12, 20, 0.70) 50%, rgba(32, 16, 27, 0.85) 100%);
+  --liquid-desktop-border: rgba(162, 54, 82, 0.24);
+  --liquid-item-active-bg: #A23652;
+  --liquid-item-active-fg: #FFFFFF;
+  --liquid-item-hover-bg:  rgba(162, 54, 82, 0.24);
+
+  /* Living Canvas Pattern (Midnight Wine) */
+  --canvas-pattern:   url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22220%22 height=%22220%22 viewBox=%220 0 220 220%22 fill=%22none%22%3E%0A  %3C!-- Motif 1: Signature Nexus Star %26 Ring at (40%2C 45) --%3E%0A  %3Ccircle cx=%2240%22 cy=%2245%22 r=%2217%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.30%22 stroke-dasharray=%223 3.5%22/%3E%0A  %3Cpath d=%22M 40 35 L 41.8 43.2 L 50 45 L 41.8 46.8 L 40 55 L 38.2 46.8 L 30 45 L 38.2 43.2 Z%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%2257%22 cy=%2245%22 r=%222.0%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%2227%22 cy=%2254%22 r=%221.6%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A%0A  %3C!-- Motif 2: Constellation Triad of Connection at (165%2C 35) --%3E%0A  %3Cpath d=%22M 148 47 L 176 28 L 188 56 Z%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.25%22/%3E%0A  %3Ccircle cx=%22148%22 cy=%2247%22 r=%222.0%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%22176%22 cy=%2228%22 r=%222.2%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%22188%22 cy=%2256%22 r=%221.8%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A%0A  %3C!-- Motif 3: Flowing Orbital Resonance Arc at (120%2C 110) --%3E%0A  %3Cpath d=%22M 82 132 C 108 92 148 92 174 126%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.35%22/%3E%0A  %3Ccircle cx=%22128%22 cy=%22101%22 r=%222.0%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%2298%22 cy=%22123%22 r=%221.5%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A%0A  %3C!-- Motif 4: Micro Nexus 4-Point Spark at (185%2C 160) --%3E%0A  %3Cpath d=%22M 185 151 L 186.5 158.5 L 194 160 L 186.5 161.5 L 185 169 L 183.5 161.5 L 176 160 L 183.5 158.5 Z%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%22198%22 cy=%22150%22 r=%221.5%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A%0A  %3C!-- Motif 5: Connected Binary Nodes at (55%2C 165) --%3E%0A  %3Cline x1=%2240%22 y1=%22165%22 x2=%2270%22 y2=%22165%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.30%22 stroke-dasharray=%223 2.5%22/%3E%0A  %3Ccircle cx=%2240%22 cy=%22165%22 r=%222.2%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%2270%22 cy=%22165%22 r=%222.2%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%2255%22 cy=%22153%22 r=%221.4%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A%0A  %3C!-- Motif 6: Seamless Edge Wrapping Elements --%3E%0A  %3C!-- Horizontal seam wrap at y=110 --%3E%0A  %3Ccircle cx=%220%22 cy=%22110%22 r=%222.0%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%22110%22 r=%222.0%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Cpath d=%22M -16 98 Q 16 110 -16 122%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.25%22/%3E%0A  %3Cpath d=%22M 204 98 Q 236 110 204 122%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.25%22/%3E%0A%0A  %3C!-- Vertical seam wrap at x=110 --%3E%0A  %3Ccircle cx=%22110%22 cy=%220%22 r=%222.0%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%22110%22 cy=%22220%22 r=%222.0%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Cpath d=%22M 98 -14 L 110 0 L 128 -9%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.25%22/%3E%0A  %3Cpath d=%22M 98 206 L 110 220 L 128 211%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.25%22/%3E%0A%0A  %3C!-- Corner wrapping: meets into a complete ring at corners --%3E%0A  %3Ccircle cx=%220%22 cy=%220%22 r=%221.8%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%220%22 r=%221.8%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%220%22 cy=%22220%22 r=%221.8%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%22220%22 r=%221.8%22 fill=%22rgba(247%2C190%2C205%2C0.22)%22/%3E%0A  %3Cpath d=%22M 0 12 A 12 12 0 0 0 12 0%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.20%22/%3E%0A  %3Cpath d=%22M 220 12 A 12 12 0 0 1 208 0%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.20%22/%3E%0A  %3Cpath d=%22M 0 208 A 12 12 0 0 1 12 220%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.20%22/%3E%0A  %3Cpath d=%22M 220 208 A 12 12 0 0 0 208 220%22 stroke=%22rgba(247%2C190%2C205%2C0.22)%22 stroke-width=%221.20%22/%3E%0A%3C/svg%3E");
+}
+
+/* ─── Theme 4: Arctic Porcelain (Cool-Neutral Light with Wine Accents) ────── */
+
+[data-theme="arctic-porcelain"] {
+  --rail-bg:          #FFFFFF;
+  --pane-list-bg:     #EDF0F4;
+  --pane-chat-bg:     #FFFFFF;
+  --pane-details-bg:  #FFFFFF;
+
+  --background:       #F4F5F8;
+  --background-alt:   #EBEEF2;
+  --surface:          #FFFFFF;
+  --surface-raised:   #FFFFFF;
+  --surface-subtle:   #F8F9FB;
+  --surface-overlay:  rgba(255, 255, 255, 0.98);
+
+  --row-hover:        #EBEEF3;
+  --row-active:       #E2E6EC;
+  --field-bg:         #FFFFFF;
+  --on-accent:        #FFFFFF;
+
+  --border:           #DCE0E7;
+  --border-subtle:    #E7EBF0;
+  --border-strong:    #CCD2DC;
+
+  --foreground:       #111418;
+  --foreground-muted: #545D69;
+  --foreground-faint: #77818E;
+  --foreground-ghost: #A2ABB8;
+
+  --accent:           #521F2D;
+  --accent-hover:     #6A2B3C;
+  --accent-soft:      rgba(82, 31, 45, 0.08);
+  --accent-rose:      #9E7580;
+  --accent-rose-soft: rgba(158, 117, 128, 0.12);
+
+  --sidebar-bg:       #FFFFFF;
+  --sidebar-border:   #DCE0E7;
+
+  --bubble-own-bg:       #521F2D;
+  --bubble-own-text:     #FFFFFF;
+  --bubble-own-border:   rgba(255, 255, 255, 0.20);
+  --bubble-own-gradient: linear-gradient(135deg, #521F2D 0%, #632637 50%, #742D41 100%);
+  --bubble-own-shadow:   0 3px 12px -2px rgba(82, 31, 45, 0.28), inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+  --bubble-other-bg:     #FFFFFF;
+  --bubble-other-text:   #111418;
+  --bubble-other-border: rgba(0, 0, 0, 0.08);
+
+  --liquid-dock-bg:        rgba(255, 255, 255, 0.86);
+  --liquid-dock-bg-hover:  rgba(255, 255, 255, 0.94);
+  --liquid-dock-border:    rgba(220, 224, 231, 0.90);
+  --liquid-dock-border-glow: rgba(82, 31, 45, 0.18);
+  --liquid-desktop-bg:     linear-gradient(180deg, rgba(255, 255, 255, 0.90) 0%, rgba(244, 245, 248, 0.60) 50%, rgba(255, 255, 255, 0.85) 100%);
+  --liquid-desktop-border: rgba(220, 224, 231, 0.92);
+  --liquid-item-active-bg: #521F2D;
+  --liquid-item-active-fg: #FFFFFF;
+  --liquid-item-hover-bg:  rgba(82, 31, 45, 0.08);
+
+  /* Living Canvas Pattern (Arctic Porcelain) */
+  --canvas-pattern:   url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22220%22 height=%22220%22 viewBox=%220 0 220 220%22 fill=%22none%22%3E%0A  %3C!-- Motif 1: Signature Nexus Star %26 Ring at (40%2C 45) --%3E%0A  %3Ccircle cx=%2240%22 cy=%2245%22 r=%2217%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.20%22 stroke-dasharray=%223 3.5%22/%3E%0A  %3Cpath d=%22M 40 35 L 41.8 43.2 L 50 45 L 41.8 46.8 L 40 55 L 38.2 46.8 L 30 45 L 38.2 43.2 Z%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%2257%22 cy=%2245%22 r=%222.0%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%2227%22 cy=%2254%22 r=%221.6%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A%0A  %3C!-- Motif 2: Constellation Triad of Connection at (165%2C 35) --%3E%0A  %3Cpath d=%22M 148 47 L 176 28 L 188 56 Z%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.15%22/%3E%0A  %3Ccircle cx=%22148%22 cy=%2247%22 r=%222.0%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%22176%22 cy=%2228%22 r=%222.2%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%22188%22 cy=%2256%22 r=%221.8%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A%0A  %3C!-- Motif 3: Flowing Orbital Resonance Arc at (120%2C 110) --%3E%0A  %3Cpath d=%22M 82 132 C 108 92 148 92 174 126%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.25%22/%3E%0A  %3Ccircle cx=%22128%22 cy=%22101%22 r=%222.0%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%2298%22 cy=%22123%22 r=%221.5%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A%0A  %3C!-- Motif 4: Micro Nexus 4-Point Spark at (185%2C 160) --%3E%0A  %3Cpath d=%22M 185 151 L 186.5 158.5 L 194 160 L 186.5 161.5 L 185 169 L 183.5 161.5 L 176 160 L 183.5 158.5 Z%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%22198%22 cy=%22150%22 r=%221.5%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A%0A  %3C!-- Motif 5: Connected Binary Nodes at (55%2C 165) --%3E%0A  %3Cline x1=%2240%22 y1=%22165%22 x2=%2270%22 y2=%22165%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.20%22 stroke-dasharray=%223 2.5%22/%3E%0A  %3Ccircle cx=%2240%22 cy=%22165%22 r=%222.2%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%2270%22 cy=%22165%22 r=%222.2%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%2255%22 cy=%22153%22 r=%221.4%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A%0A  %3C!-- Motif 6: Seamless Edge Wrapping Elements --%3E%0A  %3C!-- Horizontal seam wrap at y=110 --%3E%0A  %3Ccircle cx=%220%22 cy=%22110%22 r=%222.0%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%22110%22 r=%222.0%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Cpath d=%22M -16 98 Q 16 110 -16 122%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.15%22/%3E%0A  %3Cpath d=%22M 204 98 Q 236 110 204 122%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.15%22/%3E%0A%0A  %3C!-- Vertical seam wrap at x=110 --%3E%0A  %3Ccircle cx=%22110%22 cy=%220%22 r=%222.0%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%22110%22 cy=%22220%22 r=%222.0%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Cpath d=%22M 98 -14 L 110 0 L 128 -9%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.15%22/%3E%0A  %3Cpath d=%22M 98 206 L 110 220 L 128 211%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.15%22/%3E%0A%0A  %3C!-- Corner wrapping: meets into a complete ring at corners --%3E%0A  %3Ccircle cx=%220%22 cy=%220%22 r=%221.8%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%220%22 r=%221.8%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%220%22 cy=%22220%22 r=%221.8%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%22220%22 r=%221.8%22 fill=%22rgba(75%2C40%2C52%2C0.155)%22/%3E%0A  %3Cpath d=%22M 0 12 A 12 12 0 0 0 12 0%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.10%22/%3E%0A  %3Cpath d=%22M 220 12 A 12 12 0 0 1 208 0%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.10%22/%3E%0A  %3Cpath d=%22M 0 208 A 12 12 0 0 1 12 220%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.10%22/%3E%0A  %3Cpath d=%22M 220 208 A 12 12 0 0 0 208 220%22 stroke=%22rgba(75%2C40%2C52%2C0.155)%22 stroke-width=%221.10%22/%3E%0A%3C/svg%3E");
+}
+
+/* ─── Theme 5: Graphite (Balanced Neutral Dark Grey with Quiet Wine) ──────── */
+
+[data-theme="graphite"] {
+  --rail-bg:          #16181D;
+  --pane-list-bg:     #16181D;
+  --pane-chat-bg:     #121316;
+  --pane-details-bg:  #16181D;
+
+  --background:       #121316;
+  --background-alt:   #16181D;
+  --surface:          #1E2127;
+  --surface-raised:   #272B33;
+  --surface-subtle:   #15171B;
+  --surface-overlay:  rgba(18, 19, 22, 0.98);
+
+  --row-hover:        #23272F;
+  --row-active:       #2E333D;
+  --field-bg:         #17191E;
+  --on-accent:        #FFFFFF;
+
+  --border:           #2C313A;
+  --border-subtle:    #23272F;
+  --border-strong:    #3B424E;
+
+  --foreground:       #F1F3F6;
+  --foreground-muted: #8E96A4;
+  --foreground-faint: #6D7582;
+  --foreground-ghost: #4D535E;
+
+  --accent:           #7A2E41;
+  --accent-hover:     #94384F;
+  --accent-soft:      rgba(122, 46, 65, 0.20);
+  --accent-rose:      #C89AA5;
+  --accent-rose-soft: rgba(200, 154, 165, 0.16);
+
+  --sidebar-bg:       #16181D;
+  --sidebar-border:   #2C313A;
+
+  --bubble-own-bg:       #6C2839;
+  --bubble-own-text:     #FFFFFF;
+  --bubble-own-border:   rgba(255, 255, 255, 0.22);
+  --bubble-own-gradient: linear-gradient(135deg, #6C2839 0%, #7C3144 50%, #8D3A50 100%);
+  --bubble-own-shadow:   0 3px 12px -2px rgba(122, 46, 65, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+  --bubble-other-bg:     #1E2127;
+  --bubble-other-text:   #F1F3F6;
+  --bubble-other-border: rgba(255, 255, 255, 0.08);
+
+  --liquid-dock-bg:        rgba(30, 33, 39, 0.88);
+  --liquid-dock-bg-hover:  rgba(39, 43, 51, 0.94);
+  --liquid-dock-border:    rgba(255, 255, 255, 0.10);
+  --liquid-dock-border-glow: rgba(122, 46, 65, 0.28);
+  --liquid-desktop-bg:     linear-gradient(180deg, rgba(39, 43, 51, 0.88) 0%, rgba(22, 24, 29, 0.65) 50%, rgba(30, 33, 39, 0.85) 100%);
+  --liquid-desktop-border: rgba(255, 255, 255, 0.10);
+  --liquid-item-active-bg: #7A2E41;
+  --liquid-item-active-fg: #FFFFFF;
+  --liquid-item-hover-bg:  rgba(122, 46, 65, 0.20);
+
+  /* Living Canvas Pattern (Graphite) */
+  --canvas-pattern:   url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22220%22 height=%22220%22 viewBox=%220 0 220 220%22 fill=%22none%22%3E%0A  %3C!-- Motif 1: Signature Nexus Star %26 Ring at (40%2C 45) --%3E%0A  %3Ccircle cx=%2240%22 cy=%2245%22 r=%2217%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.25%22 stroke-dasharray=%223 3.5%22/%3E%0A  %3Cpath d=%22M 40 35 L 41.8 43.2 L 50 45 L 41.8 46.8 L 40 55 L 38.2 46.8 L 30 45 L 38.2 43.2 Z%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%2257%22 cy=%2245%22 r=%222.0%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%2227%22 cy=%2254%22 r=%221.6%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A%0A  %3C!-- Motif 2: Constellation Triad of Connection at (165%2C 35) --%3E%0A  %3Cpath d=%22M 148 47 L 176 28 L 188 56 Z%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.20%22/%3E%0A  %3Ccircle cx=%22148%22 cy=%2247%22 r=%222.0%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%22176%22 cy=%2228%22 r=%222.2%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%22188%22 cy=%2256%22 r=%221.8%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A%0A  %3C!-- Motif 3: Flowing Orbital Resonance Arc at (120%2C 110) --%3E%0A  %3Cpath d=%22M 82 132 C 108 92 148 92 174 126%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.30%22/%3E%0A  %3Ccircle cx=%22128%22 cy=%22101%22 r=%222.0%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%2298%22 cy=%22123%22 r=%221.5%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A%0A  %3C!-- Motif 4: Micro Nexus 4-Point Spark at (185%2C 160) --%3E%0A  %3Cpath d=%22M 185 151 L 186.5 158.5 L 194 160 L 186.5 161.5 L 185 169 L 183.5 161.5 L 176 160 L 183.5 158.5 Z%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%22198%22 cy=%22150%22 r=%221.5%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A%0A  %3C!-- Motif 5: Connected Binary Nodes at (55%2C 165) --%3E%0A  %3Cline x1=%2240%22 y1=%22165%22 x2=%2270%22 y2=%22165%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.25%22 stroke-dasharray=%223 2.5%22/%3E%0A  %3Ccircle cx=%2240%22 cy=%22165%22 r=%222.2%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%2270%22 cy=%22165%22 r=%222.2%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%2255%22 cy=%22153%22 r=%221.4%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A%0A  %3C!-- Motif 6: Seamless Edge Wrapping Elements --%3E%0A  %3C!-- Horizontal seam wrap at y=110 --%3E%0A  %3Ccircle cx=%220%22 cy=%22110%22 r=%222.0%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%22110%22 r=%222.0%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Cpath d=%22M -16 98 Q 16 110 -16 122%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.20%22/%3E%0A  %3Cpath d=%22M 204 98 Q 236 110 204 122%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.20%22/%3E%0A%0A  %3C!-- Vertical seam wrap at x=110 --%3E%0A  %3Ccircle cx=%22110%22 cy=%220%22 r=%222.0%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%22110%22 cy=%22220%22 r=%222.0%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Cpath d=%22M 98 -14 L 110 0 L 128 -9%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.20%22/%3E%0A  %3Cpath d=%22M 98 206 L 110 220 L 128 211%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.20%22/%3E%0A%0A  %3C!-- Corner wrapping: meets into a complete ring at corners --%3E%0A  %3Ccircle cx=%220%22 cy=%220%22 r=%221.8%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%220%22 r=%221.8%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%220%22 cy=%22220%22 r=%221.8%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Ccircle cx=%22220%22 cy=%22220%22 r=%221.8%22 fill=%22rgba(215%2C170%2C180%2C0.20)%22/%3E%0A  %3Cpath d=%22M 0 12 A 12 12 0 0 0 12 0%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.15%22/%3E%0A  %3Cpath d=%22M 220 12 A 12 12 0 0 1 208 0%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.15%22/%3E%0A  %3Cpath d=%22M 0 208 A 12 12 0 0 1 12 220%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.15%22/%3E%0A  %3Cpath d=%22M 220 208 A 12 12 0 0 0 208 220%22 stroke=%22rgba(215%2C170%2C180%2C0.20)%22 stroke-width=%221.15%22/%3E%0A%3C/svg%3E");
+}
+
+/* ─── Fluid Navigation & Smooth Cross-Theme Transitions ──────────────────── */
+
+html.nx-theme-transition,
+html.nx-theme-transition body,
+html.nx-theme-transition main,
+html.nx-theme-transition header,
+html.nx-theme-transition aside,
+html.nx-theme-transition nav,
+html.nx-theme-transition .liquid-glass-dock,
+html.nx-theme-transition .liquid-glass-dock-desktop,
+html.nx-theme-transition .liquid-glass-card,
+html.nx-theme-transition .nx-living-canvas {
+  transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out !important;
+}
+
+@keyframes nxFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes nxScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes nxStageEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 4px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.nx-fade-in {
+  animation: nxFadeIn 170ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.nx-scale-in {
+  animation: nxScaleIn 160ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.nx-stage-enter {
+  animation: nxStageEnter 140ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.nx-theme-transition,
+  html.nx-theme-transition body,
+  html.nx-theme-transition main,
+  html.nx-theme-transition header,
+  html.nx-theme-transition aside,
+  html.nx-theme-transition nav,
+  html.nx-theme-transition .liquid-glass-dock,
+  html.nx-theme-transition .liquid-glass-dock-desktop,
+  html.nx-theme-transition .liquid-glass-card,
+  html.nx-theme-transition .nx-living-canvas {
+    transition: none !important;
+  }
+  .nx-fade-in,
+  .nx-scale-in,
+  .nx-stage-enter,
+  [class*="animate-"] {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ─── Base ─────────────────────────────────────────────────────────────── */
+
+@layer base {
+  *, *::before, *::after {
+    border-color: var(--border);
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  html,
+  body {
+    height: 100%;
+    overscroll-behavior-y: none;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Clean, contemporary thin scrollbars */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: #E8E2DE;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #A77982; }
+
+  /* Native search clear button normalization */
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  ::selection {
+    background-color: rgba(84, 44, 56, 0.12);
+    color: #542C38;
+  }
+
+  /* Modern Wine focus ring */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+}
+
+/* ─── Utilities ────────────────────────────────────────────────────────── */
+
+@layer utilities {
+  /* Clean scrollbar suppression for carousels / stories / action sheets */
+  .no-scrollbar::-webkit-scrollbar,
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar,
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Clean contemporary search input */
+  .search-input {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+  .search-input::placeholder {
+    color: var(--foreground-faint);
+  }
+  .search-input:hover {
+    border-color: var(--border-strong);
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  /* Signature Glass UI 2.0 Surfaces */
+  .glass-surface {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-specular), var(--glass-shadow);
+  }
+
+  .glass-surface-wine {
+    background-color: var(--glass-bg-wine);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border-wine);
+    box-shadow: var(--glass-specular);
+  }
+
+  .glass-header {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: var(--glass-specular);
+  }
+
+  .glass-nav {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-top: 1px solid var(--glass-border);
+    box-shadow: var(--glass-specular);
+  }
+
+  /* ─── Liquid Glass Floating Navigation System ───────────────────────── */
+  .liquid-glass-dock {
+    background-color: var(--liquid-dock-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--liquid-dock-border);
+    box-shadow: var(--liquid-dock-specular), var(--liquid-dock-shadow);
+    transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  }
+
+  .liquid-glass-dock:hover {
+    border-color: var(--liquid-dock-border-glow);
+  }
+
+  .liquid-glass-dock-desktop {
+    background: var(--liquid-desktop-bg);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid var(--liquid-desktop-border);
+    box-shadow: var(--liquid-desktop-specular), var(--liquid-desktop-shadow);
+    transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+  }
+
+  .liquid-glass-dock-desktop:hover {
+    border-color: var(--liquid-dock-border-glow);
+    box-shadow: var(--liquid-desktop-specular), 0 28px 56px -10px rgba(84, 44, 56, 0.18), 0 12px 24px -4px rgba(84, 44, 56, 0.10);
+  }
+
+  .liquid-glass-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 160ms cubic-bezier(0.2, 0, 0, 1), background-color 160ms ease, color 160ms ease;
+  }
+
+  .liquid-glass-item:hover {
+    background-color: var(--liquid-item-hover-bg);
+  }
+
+  .liquid-glass-item:active {
+    transform: scale(0.92);
+  }
+
+  .liquid-glass-item:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .liquid-glass-active-pill {
+    background: var(--liquid-item-active-bg);
+    color: var(--liquid-item-active-fg);
+    box-shadow: 0 4px 14px -2px rgba(84, 44, 56, 0.40), inset 0 1px 1px 0 rgba(255, 255, 255, 0.35);
+  }
+
+  /* ─── Atmospheric Ambient Canvas Layers ────────────────────────────── */
+  .nx-ambient-shell {
+    background-color: #F6F3EF;
+    background-image: 
+      radial-gradient(ellipse 900px 750px at 4% 18%, rgba(99, 29, 53, 0.07), transparent 60%),
+      radial-gradient(ellipse 800px 700px at 96% 82%, rgba(167, 121, 130, 0.08), transparent 60%);
+  }
+
+  .dark .nx-ambient-shell {
+    background-color: #0E0B0D;
+    background-image: 
+      radial-gradient(ellipse 900px 750px at 4% 18%, rgba(99, 29, 53, 0.26), transparent 60%),
+      radial-gradient(ellipse 750px 650px at 96% 82%, rgba(142, 52, 78, 0.18), transparent 60%);
+  }
+
+  /* Frosted Glass Inset Column for Conversation List */
+  .nx-glass-column {
+    background-color: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-right: 1px solid rgba(229, 224, 220, 0.85);
+  }
+
+  .dark .nx-glass-column {
+    background-color: rgba(20, 14, 18, 0.76);
+    backdrop-filter: blur(24px) saturate(190%);
+    -webkit-backdrop-filter: blur(24px) saturate(190%);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Luminous Active Row Card */
+  .nx-contact-row-active {
+    background-color: #FFFFFF !important;
+    border: 1px solid rgba(99, 29, 53, 0.24) !important;
+    box-shadow: 0 4px 16px -2px rgba(99, 29, 53, 0.10), 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
+    border-radius: 16px !important;
+  }
+
+  .dark .nx-contact-row-active {
+    background-color: rgba(38, 24, 32, 0.90) !important;
+    border: 1px solid rgba(166, 63, 92, 0.40) !important;
+    box-shadow: 0 6px 20px -3px rgba(0, 0, 0, 0.55) !important;
+    border-radius: 16px !important;
+  }
+
+  .liquid-glass-jewel {
+    background: linear-gradient(135deg, #6A3947 0%, #542C38 100%);
+    box-shadow: 0 8px 24px -3px rgba(84, 44, 56, 0.45), inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.40);
+    transition: transform 160ms cubic-bezier(0.2, 0, 0, 1), box-shadow 160ms ease;
+  }
+
+  .liquid-glass-jewel:hover {
+    transform: scale(1.06);
+    box-shadow: 0 12px 28px -3px rgba(84, 44, 56, 0.55), inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.50);
+  }
+
+  .liquid-glass-jewel:active {
+    transform: scale(0.92);
+  }
+
+  /* ─── Cohesive Architectural System Classes ────────────────────────────── */
+  .liquid-glass-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--glass-specular), 0 2px 8px -2px rgba(35, 15, 22, 0.04), 0 8px 24px -4px rgba(35, 15, 22, 0.06);
+    transition: background-color 160ms var(--ease-smooth), border-color 160ms var(--ease-smooth), box-shadow 160ms var(--ease-smooth), transform 160ms var(--ease-smooth);
+  }
+
+  .liquid-glass-card-interactive {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--glass-specular), 0 2px 8px -2px rgba(35, 15, 22, 0.04), 0 8px 24px -4px rgba(35, 15, 22, 0.06);
+    transition: background-color 160ms var(--ease-smooth), border-color 160ms var(--ease-smooth), box-shadow 160ms var(--ease-smooth), transform 160ms var(--ease-smooth);
+  }
+
+  .liquid-glass-card-interactive:hover {
+    border-color: var(--accent-rose, var(--border-strong));
+    box-shadow: var(--glass-specular), 0 4px 16px -2px rgba(88, 32, 48, 0.08), 0 12px 32px -4px rgba(35, 15, 22, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .liquid-glass-card-interactive:active {
+    transform: scale(0.99);
+  }
+
+  .liquid-glass-modal {
+    background-color: var(--surface-overlay, var(--surface));
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--border);
+    box-shadow: var(--glass-specular), 0 24px 64px -12px rgba(0, 0, 0, 0.35);
+  }
+
+  .liquid-glass-popover {
+    background-color: var(--surface);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    border: 1px solid var(--border);
+    box-shadow: var(--glass-specular), 0 8px 28px -4px rgba(35, 15, 22, 0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  .liquid-glass-composer {
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  .nx-chat-area {
+    background: var(--pane-chat-bg, var(--background));
+  }
+
+  /* ─── Living Canvas ────────────────────────────────────────── */
+  .nx-living-canvas {
+    background-color: var(--pane-chat-bg, var(--background));
+    background-image: var(--canvas-pattern);
+    background-repeat: repeat;
+    background-size: 220px 220px;
+    background-attachment: local;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+  }
+
+  .nx-touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+  }
+
+  .nx-composer-wrapper {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 12px 24px 16px;
+  }
+
+  /* Solid fallbacks when backdrop-filter is unsupported */
+  @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .glass-surface, .glass-header, .glass-nav, .liquid-glass-dock, .liquid-glass-dock-desktop, .liquid-glass-card, .liquid-glass-popover, .liquid-glass-composer {
+      background-color: var(--surface) !important;
+    }
+    .glass-surface-wine {
+      background-color: var(--surface-subtle) !important;
+    }
+  }
+}
+
+/* ─── Dark Mode Class Mappings ────────────────────────────────────────── */
+
+/* Dark mode glass and card classes now use unified CSS token variables across all 5 themes */
+
+.dark body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.dark .bg-porcelain {
+  background-color: var(--background) !important;
+}
+
+.dark .bg-porcelain\/60 {
+  background-color: rgba(20, 15, 19, 0.70) !important;
+}
+
+.dark .bg-white {
+  background-color: var(--surface) !important;
+}
+
+.dark .bg-white\/80 {
+  background-color: rgba(26, 20, 24, 0.85) !important;
+}
+
+.dark .bg-white\/90 {
+  background-color: rgba(26, 20, 24, 0.92) !important;
+}
+
+.dark .border-stone {
+  border-color: var(--border) !important;
+}
+
+.dark .border-stone-subtle {
+  border-color: var(--border-subtle) !important;
+}
+
+.dark .border-stone\/50 {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+.dark .border-stone\/60 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.dark .border-stone\/80 {
+  border-color: rgba(255, 255, 255, 0.10) !important;
+}
+
+.dark .text-charcoal {
+  color: var(--foreground) !important;
+}
+
+.dark .text-charcoal\/90 {
+  color: rgba(247, 243, 245, 0.9) !important;
+}
+
+.dark .text-muted {
+  color: var(--foreground-muted) !important;
+}
+
+.dark .text-muted-faint {
+  color: var(--foreground-faint) !important;
+}
+
+.dark .ring-white {
+  --tw-ring-color: var(--surface) !important;
+}
+
+.dark .ring-offset-white {
+  --tw-ring-offset-color: var(--surface) !important;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-rose);
+}
+
+/* ─── Accessibility Modifiers ──────────────────────────────────────────── */
+
+.nx-large-text {
+  font-size: 16px !important;
+}
+
+.nx-high-contrast {
+  --border: #7B636F;
+  --border-strong: #9E8391;
+  --foreground: #FFFFFF;
+  --foreground-muted: #E2D7DC;
+}
+
+html:not(.dark).nx-high-contrast {
+  --border: #6E6168;
+  --border-strong: #3B2F34;
+  --foreground: #000000;
+  --foreground-muted: #3B2F34;
+}
+
+.nx-reduce-motion,
+.nx-reduce-motion *,
+.nx-reduce-motion *::before,
+.nx-reduce-motion *::after,
+.nx-disable-anim,
+.nx-disable-anim *,
+.nx-disable-anim *::before,
+.nx-disable-anim *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Stagger Animation Delays */
+.delay-75 { animation-delay: 75ms; }
+.delay-100 { animation-delay: 100ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-250 { animation-delay: 250ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+.nx-focus-visible :focus-visible {
+  outline: 3px solid var(--accent) !important;
+  outline-offset: 3px !important;
+}
+
+/* ─── Chat Appearance Customization ────────────────────────────────────── */
+
+html[data-chat-size="small"] .chat-bubble-text {
+  font-size: 12.5px !important;
+}
+html[data-chat-size="medium"] .chat-bubble-text {
+  font-size: 14px !important;
+}
+html[data-chat-size="large"] .chat-bubble-text {
+  font-size: 16px !important;
+}
+
+/* Default message grouping gaps (Requirement 3: 3-4px vertical separation for consecutive, 12px for sender changes) */
+.chat-msg-gap-join {
+  margin-top: 3.5px;
+}
+.chat-msg-gap-new {
+  margin-top: 12px;
+}
+
+html[data-chat-spacing="compact"] .chat-msg-gap-join {
+  margin-top: 2px !important;
+}
+html[data-chat-spacing="compact"] .chat-msg-gap-new {
+  margin-top: 8px !important;
+}
+html[data-chat-spacing="comfortable"] .chat-msg-gap-join {
+  margin-top: 3.5px !important;
+}
+html[data-chat-spacing="comfortable"] .chat-msg-gap-new {
+  margin-top: 12px !important;
+}
+html[data-chat-spacing="relaxed"] .chat-msg-gap-join {
+  margin-top: 6px !important;
+}
+html[data-chat-spacing="relaxed"] .chat-msg-gap-new {
+  margin-top: 18px !important;
+}

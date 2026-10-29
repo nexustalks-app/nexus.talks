@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220" fill="none">
+  <!-- Motif 1: Signature Nexus Star & Ring at (40, 45) -->
+  <circle cx="40" cy="45" r="17" stroke="rgba(88,32,48,0.088)" stroke-width="1.0" stroke-dasharray="3 3.5"/>
+  <path d="M 40 35 L 41.8 43.2 L 50 45 L 41.8 46.8 L 40 55 L 38.2 46.8 L 30 45 L 38.2 43.2 Z" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="57" cy="45" r="2.0" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="27" cy="54" r="1.6" fill="rgba(88,32,48,0.088)"/>
+
+  <!-- Motif 2: Constellation Triad of Connection at (165, 35) -->
+  <path d="M 148 47 L 176 28 L 188 56 Z" stroke="rgba(88,32,48,0.088)" stroke-width="0.95"/>
+  <circle cx="148" cy="47" r="2.0" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="176" cy="28" r="2.2" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="188" cy="56" r="1.8" fill="rgba(88,32,48,0.088)"/>
+
+  <!-- Motif 3: Flowing Orbital Resonance Arc at (120, 110) -->
+  <path d="M 82 132 C 108 92 148 92 174 126" stroke="rgba(88,32,48,0.088)" stroke-width="1.05"/>
+  <circle cx="128" cy="101" r="2.0" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="98" cy="123" r="1.5" fill="rgba(88,32,48,0.088)"/>
+
+  <!-- Motif 4: Micro Nexus 4-Point Spark at (185, 160) -->
+  <path d="M 185 151 L 186.5 158.5 L 194 160 L 186.5 161.5 L 185 169 L 183.5 161.5 L 176 160 L 183.5 158.5 Z" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="198" cy="150" r="1.5" fill="rgba(88,32,48,0.088)"/>
+
+  <!-- Motif 5: Connected Binary Nodes at (55, 165) -->
+  <line x1="40" y1="165" x2="70" y2="165" stroke="rgba(88,32,48,0.088)" stroke-width="1.0" stroke-dasharray="3 2.5"/>
+  <circle cx="40" cy="165" r="2.2" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="70" cy="165" r="2.2" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="55" cy="153" r="1.4" fill="rgba(88,32,48,0.088)"/>
+
+  <!-- Motif 6: Seamless Edge Wrapping Elements -->
+  <!-- Horizontal seam wrap at y=110 -->
+  <circle cx="0" cy="110" r="2.0" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="220" cy="110" r="2.0" fill="rgba(88,32,48,0.088)"/>
+  <path d="M -16 98 Q 16 110 -16 122" stroke="rgba(88,32,48,0.088)" stroke-width="0.95"/>
+  <path d="M 204 98 Q 236 110 204 122" stroke="rgba(88,32,48,0.088)" stroke-width="0.95"/>
+
+  <!-- Vertical seam wrap at x=110 -->
+  <circle cx="110" cy="0" r="2.0" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="110" cy="220" r="2.0" fill="rgba(88,32,48,0.088)"/>
+  <path d="M 98 -14 L 110 0 L 128 -9" stroke="rgba(88,32,48,0.088)" stroke-width="0.95"/>
+  <path d="M 98 206 L 110 220 L 128 211" stroke="rgba(88,32,48,0.088)" stroke-width="0.95"/>
+
+  <!-- Corner wrapping: meets into a complete ring at corners -->
+  <circle cx="0" cy="0" r="1.8" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="220" cy="0" r="1.8" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="0" cy="220" r="1.8" fill="rgba(88,32,48,0.088)"/>
+  <circle cx="220" cy="220" r="1.8" fill="rgba(88,32,48,0.088)"/>
+  <path d="M 0 12 A 12 12 0 0 0 12 0" stroke="rgba(88,32,48,0.088)" stroke-width="0.9"/>
+  <path d="M 220 12 A 12 12 0 0 1 208 0" stroke="rgba(88,32,48,0.088)" stroke-width="0.9"/>
+  <path d="M 0 208 A 12 12 0 0 1 12 220" stroke="rgba(88,32,48,0.088)" stroke-width="0.9"/>
+  <path d="M 220 208 A 12 12 0 0 0 208 220" stroke="rgba(88,32,48,0.088)" stroke-width="0.9"/>
+</svg>

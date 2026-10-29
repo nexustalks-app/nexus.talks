@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="nexus_wine">#722F37</color>
+    <color name="nexus_wine_dark">#501F25</color>
+    <color name="nexus_porcelain">#F2EFEA</color>
+    <color name="nexus_porcelain_surface">#FAF8F5</color>
+    <color name="nexus_charcoal">#1A1817</color>
+    <color name="nexus_accent">#CB4625</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+</resources>
