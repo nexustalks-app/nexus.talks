@@ -14,6 +14,7 @@ import {
   Laptop,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
+import { HeroInstallCta } from '@/components/landing/hero-install-cta';
 
 export const metadata = {
   title: 'Nexus.talks — Private, Intimate Communication',
@@ -120,14 +121,7 @@ export default async function HomePage() {
             {/* ── Primary Action Area: Install App & See a Demo ──────────── */}
             <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto animate-fade-up delay-300">
               {/* Primary Action: Install App */}
-              <a
-                href="#install"
-                className="inline-flex h-12 sm:h-13 items-center justify-center gap-2.5 rounded-2xl bg-wine px-8 text-[14.5px] font-semibold text-white shadow-md shadow-wine/25 transition-[background-color,transform,box-shadow] duration-150 ease-out hover:bg-wine-hover hover:scale-[1.02] active:scale-[0.98] border-t border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wine focus-visible:ring-offset-2"
-                aria-label="Install Nexus.talks App on your device"
-              >
-                <Download className="h-4 w-4" />
-                <span>Install App</span>
-              </a>
+              <HeroInstallCta />
 
               {/* Secondary Action: See a Demo */}
               <Link
@@ -297,8 +291,8 @@ export default async function HomePage() {
                     <Smartphone className="h-5 w-5" strokeWidth={1.8} />
                   </div>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-wine/10 dark:bg-wine/25 px-3 py-1 text-[11px] font-semibold text-wine dark:text-[#E2A6B3]">
-                    <Clock className="h-3 w-3" />
-                    <span>Private Testing Preview · v1.0</span>
+                    <ShieldCheck className="h-3 w-3 text-emerald-600" />
+                    <span>v1.0.0 Release · Target API 35</span>
                   </span>
                 </div>
 
@@ -306,24 +300,24 @@ export default async function HomePage() {
                   Android Native App
                 </h3>
                 <p className="mt-2 text-[13px] leading-relaxed text-muted dark:text-muted-foreground">
-                  Engineered with an edge-to-edge porcelain interface, hardware keyboard docking, persistent cryptographic session storage, and gesture back-navigation.
+                  Engineered with edge-to-edge porcelain surfaces, hardware keyboard docking, persistent cryptographic session storage, and gesture back-navigation.
                 </p>
 
                 {/* Honest Status Notice Box */}
-                <div className="mt-5 rounded-2xl border border-stone-subtle dark:border-[#382833] bg-porcelain dark:bg-[#181216] p-4 text-[12px] leading-relaxed text-muted dark:text-stone/80">
-                  <p className="font-semibold text-charcoal dark:text-foreground mb-1 flex items-center gap-1.5">
-                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                    <span>Staging Verification Gate Active</span>
+                <div className="mt-5 rounded-2xl border border-stone-subtle dark:border-[#382833] bg-porcelain dark:bg-[#181216] p-4 text-[12px] leading-relaxed text-muted dark:text-stone/80 space-y-1.5">
+                  <p className="font-semibold text-charcoal dark:text-foreground flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                    <span>Production HTTPS Endpoint Configured</span>
                   </p>
                   <p>
-                    The private testing APK (<code>com.nexustalks.app</code>) is currently provisioned for authorized staging testers. Signed public APK downloads and app store releases will open following staging verification.
+                    Compiled for <code>https://nexus-talks.onrender.com</code> under package <code>com.nexustalks.app</code>. Public Google Play and direct CDN distribution pipelines are currently staging.
                   </p>
                 </div>
               </div>
 
               <div className="mt-6 pt-5 border-t border-stone-subtle dark:border-[#33252E] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[12px]">
                 <span className="text-muted-faint text-[11.5px]">
-                  Authorized tester? Check your internal distribution invite.
+                  Internal testers: check distribution invite.
                 </span>
                 <Link
                   href="/demo"
@@ -372,21 +366,22 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <div className="mt-6 pt-5 border-t border-stone-subtle dark:border-[#33252E]">
+              <div className="mt-6 pt-5 border-t border-stone-subtle dark:border-[#33252E] flex flex-col sm:flex-row gap-2.5">
+                <HeroInstallCta className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98] border-t border-white/20" />
                 {user ? (
                   <Link
                     href="/conversations"
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98]"
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-stone-strong/70 dark:border-[#42313D] bg-white/80 dark:bg-[#251D22]/80 px-4 text-xs font-semibold text-charcoal dark:text-foreground hover:bg-stone/30 transition-all"
                   >
-                    <span>Open Web Messenger</span>
+                    <span>Open Messages</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 ) : (
                   <Link
                     href="/signup"
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98]"
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-stone-strong/70 dark:border-[#42313D] bg-white/80 dark:bg-[#251D22]/80 px-4 text-xs font-semibold text-charcoal dark:text-foreground hover:bg-stone/30 transition-all"
                   >
-                    <span>Launch Web Application</span>
+                    <span>Browser Sign Up</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 )}
