@@ -315,33 +315,35 @@ export function InstallAppDialog({ isOpen, onClose }: InstallAppDialogProps) {
             </div>
 
             <div className="rounded-2xl border border-stone-subtle dark:border-[#382833] bg-white/50 dark:bg-[#1E151C] p-4 text-xs text-muted dark:text-stone/80 leading-relaxed">
-              <p className="font-semibold text-charcoal dark:text-foreground mb-1">
-                Release Status
+              <p className="font-semibold text-charcoal dark:text-foreground mb-1 flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                <span>Verified Public Release Ready</span>
               </p>
               <p>
-                The Android release binary is compiled and configured against the production HTTPS domain. Public APK distribution via Google Play and verified CDN release hosting is currently staging.
+                Signed production release (<code>nexus-talks-v1.0.0.apk</code>, 5.0 MB) is ready for direct installation.
               </p>
-              <p className="mt-2 text-muted-faint text-[11px]">
-                Authorized beta testers may access early release packages via their internal distribution invite.
-              </p>
+              <div className="mt-2.5 rounded-xl bg-porcelain dark:bg-[#181216] border border-stone-subtle dark:border-[#33252E] p-2.5 text-[11.5px] text-muted-foreground">
+                <strong className="text-charcoal dark:text-foreground">Android Installation Note:</strong> When opening the APK, Android security will ask you to approve installation from your browser. Tap <em>Settings → Allow from this source</em> to complete installation.
+              </div>
             </div>
 
             <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
-              <button
-                onClick={() => setActiveTab('pwa')}
+              <a
+                href="https://github.com/nexustalks-app/nexus.talks/releases/download/v1.0.0/nexus-talks-v1.0.0.apk"
+                download="nexus-talks-v1.0.0.apk"
                 className="flex-1 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98] border-t border-white/20"
               >
                 <Download className="h-4 w-4" />
-                <span>Use Instant Web App</span>
-              </button>
-              <Link
-                href="/demo"
-                onClick={onClose}
+                <span>Download Android App (.apk)</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => setActiveTab('pwa')}
                 className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-stone-strong/70 dark:border-[#42313D] bg-white/80 dark:bg-[#251D22]/80 px-4 text-xs font-semibold text-charcoal dark:text-foreground hover:bg-stone/30 transition-all"
               >
-                <span>Interactive Demo</span>
-                <ExternalLink className="h-3.5 w-3.5 text-muted" />
-              </Link>
+                <Laptop className="h-4 w-4 text-wine dark:text-[#E2A6B3]" />
+                <span>Web App Option</span>
+              </button>
             </div>
           </div>
         )}

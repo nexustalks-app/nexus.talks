@@ -20,12 +20,36 @@ android {
 
     signingConfigs {
         release {
-            def keystorePath = project.findProperty("KEYSTORE_FILE") ?: System.getenv("KEYSTORE_FILE")
-            if (keystorePath && file(keystorePath).exists()) {
+            def localProperties = new Properties()
+            def localPropertiesFile = rootProject.file('local.properties')
+            if (localPropertiesFile.exists()) {
+                localPropertiesFile.withInputStream { localProperties.load(it) }
+            }
+
+            def keystorePath = localProperties.getProperty('RELEASE_KEYSTORE_PATH') ?:
+                               project.findProperty("KEYSTORE_FILE") ?:
+                               System.getenv("KEYSTORE_FILE") ?:
+                               "${System.getProperty('user.home')}/.android/nexus-talks-release.jks"
+
+            def keystorePassword = localProperties.getProperty('RELEASE_KEYSTORE_PASSWORD') ?:
+                                   project.findProperty("KEYSTORE_PASSWORD") ?:
+                                   System.getenv("KEYSTORE_PASSWORD")
+
+            def keyAliasVal = localProperties.getProperty('RELEASE_KEY_ALIAS') ?:
+                              project.findProperty("KEY_ALIAS") ?:
+                              System.getenv("KEY_ALIAS") ?:
+                              "nexus-talks"
+
+            def keyPass = localProperties.getProperty('RELEASE_KEY_PASSWORD') ?:
+                          project.findProperty("KEY_PASSWORD") ?:
+                          System.getenv("KEY_PASSWORD") ?:
+                          keystorePassword
+
+            if (keystorePath && file(keystorePath).exists() && keystorePassword) {
                 storeFile file(keystorePath)
-                storePassword project.findProperty("KEYSTORE_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD") ?: ""
-                keyAlias project.findProperty("KEY_ALIAS") ?: System.getenv("KEY_ALIAS") ?: ""
-                keyPassword project.findProperty("KEY_PASSWORD") ?: System.getenv("KEY_PASSWORD") ?: ""
+                storePassword keystorePassword
+                keyAlias keyAliasVal
+                keyPassword keyPass
             } else {
                 def defaultDebugKeystore = file("${System.getProperty('user.home')}/.android/debug.keystore")
                 if (defaultDebugKeystore.exists()) {

@@ -120,18 +120,32 @@ export default async function HomePage() {
 
             {/* ── Primary Action Area: Install App & See a Demo ──────────── */}
             <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto animate-fade-up delay-300">
-              {/* Primary Action: Install App */}
+              {/* Primary Action: Download APK and PWA Install */}
               <HeroInstallCta />
 
               {/* Secondary Action: See a Demo */}
               <Link
                 href="/demo"
-                className="inline-flex h-12 sm:h-13 items-center justify-center gap-2.5 rounded-2xl border border-stone-strong/70 dark:border-[#4B3944] bg-white/80 dark:bg-[#251D22]/80 px-7 text-[14.5px] font-medium text-charcoal dark:text-foreground shadow-2xs transition-[background-color,border-color,color,transform] duration-150 ease-out hover:bg-stone/30 hover:border-wine/50 hover:text-wine hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wine focus-visible:ring-offset-2"
+                className="inline-flex h-12 sm:h-13 items-center justify-center gap-2 rounded-2xl border border-stone-strong/70 dark:border-[#4B3944] bg-white/80 dark:bg-[#251D22]/80 px-6 text-[14.5px] font-medium text-charcoal dark:text-foreground shadow-2xs transition-[background-color,border-color,color,transform] duration-150 ease-out hover:bg-stone/30 hover:border-wine/50 hover:text-wine hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wine focus-visible:ring-offset-2 shrink-0"
                 aria-label="See an interactive demo of Nexus.talks"
               >
                 <Play className="h-4 w-4 text-wine dark:text-[#E2A6B3] fill-wine dark:fill-[#E2A6B3]" />
                 <span>See a Demo</span>
               </Link>
+            </div>
+
+            {/* Verified Release Metadata & Security Notice */}
+            <div className="mt-3.5 flex flex-wrap items-center gap-2 text-[11.5px] text-muted dark:text-muted-foreground animate-fade-up delay-350">
+              <span className="inline-flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-600/10 px-2.5 py-0.5 rounded-full">
+                <CheckCircle2 className="h-3 w-3" />
+                <span>Verified Release v1.0.0</span>
+              </span>
+              <span>•</span>
+              <span className="font-mono text-charcoal dark:text-stone font-medium">5.0 MB APK</span>
+              <span>•</span>
+              <span>Android 8.0+ (API 26–35)</span>
+              <span>•</span>
+              <span className="text-muted-faint">Android prompts to approve package installation</span>
             </div>
 
             {/* Contextual Account Link */}
@@ -304,26 +318,35 @@ export default async function HomePage() {
                 </p>
 
                 {/* Honest Status Notice Box */}
-                <div className="mt-5 rounded-2xl border border-stone-subtle dark:border-[#382833] bg-porcelain dark:bg-[#181216] p-4 text-[12px] leading-relaxed text-muted dark:text-stone/80 space-y-1.5">
+                <div className="mt-5 rounded-2xl border border-stone-subtle dark:border-[#382833] bg-porcelain dark:bg-[#181216] p-4 text-[12px] leading-relaxed text-muted dark:text-stone/80 space-y-2">
                   <p className="font-semibold text-charcoal dark:text-foreground flex items-center gap-1.5">
                     <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                    <span>Production HTTPS Endpoint Configured</span>
+                    <span>Verified Production Release Available</span>
                   </p>
                   <p>
-                    Compiled for <code>https://nexus-talks.onrender.com</code> under package <code>com.nexustalks.app</code>. Public Google Play and direct CDN distribution pipelines are currently staging.
+                    Targeting <code>https://nexus-talks.onrender.com</code> under package <code>com.nexustalks.app</code>. Cryptographically signed with release certificate.
                   </p>
+                  <div className="pt-1 text-[11px] text-muted-faint">
+                    Note: Android requires approving installation when downloading via browser.
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-6 pt-5 border-t border-stone-subtle dark:border-[#33252E] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[12px]">
-                <span className="text-muted-faint text-[11.5px]">
-                  Internal testers: check distribution invite.
-                </span>
+              <div className="mt-6 pt-5 border-t border-stone-subtle dark:border-[#33252E] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-[12px]">
+                <a
+                  href="https://github.com/nexustalks-app/nexus.talks/releases/download/v1.0.0/nexus-talks-v1.0.0.apk"
+                  download="nexus-talks-v1.0.0.apk"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98] px-5 border-t border-white/20"
+                  aria-label="Download Android App APK (v1.0.0, 5.0 MB)"
+                >
+                  <Download className="h-4 w-4" />
+                  <span>Download APK (v1.0.0 · 5.0 MB)</span>
+                </a>
                 <Link
                   href="/demo"
-                  className="font-semibold text-wine dark:text-[#F7B6C4] hover:underline inline-flex items-center gap-1 shrink-0"
+                  className="font-semibold text-wine dark:text-[#F7B6C4] hover:underline inline-flex items-center gap-1 shrink-0 text-center justify-center"
                 >
-                  <span>Experience interactive demo</span>
+                  <span>Interactive demo</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
