@@ -7,6 +7,11 @@ import {
   Lock,
   MessageSquare,
   Play,
+  Download,
+  Smartphone,
+  CheckCircle2,
+  Clock,
+  Laptop,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 
@@ -112,45 +117,60 @@ export default async function HomePage() {
               A private communication sanctuary engineered for deliberate dialogue, tactile elegance, and zero algorithmic noise. Experience messaging crafted for people who value words.
             </p>
 
-            {/* ── Primary Action Area with 40% Demo Ratio ─────────────────── */}
+            {/* ── Primary Action Area: Install App & See a Demo ──────────── */}
             <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto animate-fade-up delay-300">
-              {user ? (
-                <Link
-                  href="/conversations"
-                  className="inline-flex h-12 sm:h-13 items-center justify-center gap-2.5 rounded-2xl bg-wine px-8 text-[14.5px] font-semibold text-white shadow-md shadow-wine/25 transition-[background-color,transform,box-shadow] duration-150 ease-out hover:bg-wine-hover hover:scale-[1.02] active:scale-[0.98] border-t border-white/20"
-                >
-                  <span>Continue to Messages</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              ) : (
-                <Link
-                  href="/signup"
-                  className="inline-flex h-12 sm:h-13 items-center justify-center gap-2.5 rounded-2xl bg-wine px-8 text-[14.5px] font-semibold text-white shadow-md shadow-wine/25 transition-[background-color,transform,box-shadow] duration-150 ease-out hover:bg-wine-hover hover:scale-[1.02] active:scale-[0.98] border-t border-white/20"
-                >
-                  <span>Get started</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              )}
+              {/* Primary Action: Install App */}
+              <a
+                href="#install"
+                className="inline-flex h-12 sm:h-13 items-center justify-center gap-2.5 rounded-2xl bg-wine px-8 text-[14.5px] font-semibold text-white shadow-md shadow-wine/25 transition-[background-color,transform,box-shadow] duration-150 ease-out hover:bg-wine-hover hover:scale-[1.02] active:scale-[0.98] border-t border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wine focus-visible:ring-offset-2"
+                aria-label="Install Nexus.talks App on your device"
+              >
+                <Download className="h-4 w-4" />
+                <span>Install App</span>
+              </a>
 
-              {/* Secondary Action: See a demo (~40% visual prominence) */}
+              {/* Secondary Action: See a Demo */}
               <Link
                 href="/demo"
-                className="inline-flex h-11 sm:h-12 items-center justify-center gap-2 rounded-2xl border border-stone-strong/70 dark:border-[#4B3944] bg-white/80 dark:bg-[#251D22]/80 px-5 text-[13.5px] font-medium text-charcoal dark:text-foreground shadow-2xs transition-[background-color,border-color,color,transform] duration-150 ease-out hover:bg-stone/30 hover:border-wine/50 hover:text-wine hover:scale-[1.02] active:scale-[0.98]"
+                className="inline-flex h-12 sm:h-13 items-center justify-center gap-2.5 rounded-2xl border border-stone-strong/70 dark:border-[#4B3944] bg-white/80 dark:bg-[#251D22]/80 px-7 text-[14.5px] font-medium text-charcoal dark:text-foreground shadow-2xs transition-[background-color,border-color,color,transform] duration-150 ease-out hover:bg-stone/30 hover:border-wine/50 hover:text-wine hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wine focus-visible:ring-offset-2"
+                aria-label="See an interactive demo of Nexus.talks"
               >
-                <Play className="h-3.5 w-3.5 text-wine dark:text-[#E2A6B3] fill-wine dark:fill-[#E2A6B3]" />
-                <span>See a demo</span>
+                <Play className="h-4 w-4 text-wine dark:text-[#E2A6B3] fill-wine dark:fill-[#E2A6B3]" />
+                <span>See a Demo</span>
               </Link>
             </div>
 
-            {/* Existing user note */}
-            {!user && (
-              <p className="mt-4 text-[12.5px] text-muted dark:text-muted-foreground animate-fade-up delay-400">
-                Already registered?{' '}
+            {/* Contextual Account Link */}
+            {user ? (
+              <p className="mt-4 text-[13px] text-muted dark:text-muted-foreground animate-fade-up delay-400">
+                Signed in as{' '}
+                <span className="font-semibold text-charcoal dark:text-foreground">
+                  {user.user_metadata?.display_name || user.email?.split('@')[0] || 'User'}
+                </span>
+                .{' '}
+                <Link
+                  href="/conversations"
+                  className="font-semibold text-wine dark:text-[#F7B6C4] hover:underline inline-flex items-center gap-1"
+                >
+                  <span>Open Messenger</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </p>
+            ) : (
+              <p className="mt-4 text-[13px] text-muted dark:text-muted-foreground animate-fade-up delay-400">
+                Prefer browser access?{' '}
+                <Link
+                  href="/signup"
+                  className="font-semibold text-wine dark:text-[#F7B6C4] hover:underline"
+                >
+                  Create account
+                </Link>
+                {' '}or{' '}
                 <Link
                   href="/login"
                   className="font-semibold text-wine dark:text-[#F7B6C4] hover:underline"
                 >
-                  Sign in to your account →
+                  Sign in →
                 </Link>
               </p>
             )}
@@ -245,6 +265,135 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
+
+        {/* ── App Installation Section ────────────────────────────────────── */}
+        <section
+          id="install"
+          aria-labelledby="install-heading"
+          className="mt-20 border-t border-stone-subtle dark:border-[#30242B] pt-16 scroll-mt-24"
+        >
+          <div className="flex flex-col items-start text-left mb-10">
+            <div className="inline-flex items-center gap-2 rounded-full border border-stone-subtle dark:border-[#382833] bg-white/90 dark:bg-[#20181D] px-3.5 py-1 text-[11.5px] font-medium text-muted dark:text-stone/80 shadow-xs mb-3">
+              <Smartphone className="h-3.5 w-3.5 text-wine dark:text-[#E2A6B3]" />
+              <span>Cross-Platform Availability</span>
+            </div>
+            <h2
+              id="install-heading"
+              className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-charcoal dark:text-foreground"
+            >
+              Install Nexus.talks on your devices
+            </h2>
+            <p className="mt-2.5 max-w-2xl text-[14px] sm:text-[15px] leading-relaxed text-muted dark:text-muted-foreground">
+              A private communication sanctuary engineered for deliberate dialogue. Choose between our native mobile client preview and zero-install browser app.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Card 1: Android Native Client */}
+            <div className="flex flex-col justify-between rounded-3xl border border-stone/80 dark:border-[#3B2C34] glass-surface bg-white/80 dark:bg-[#20181D]/80 p-6 sm:p-7 shadow-xs">
+              <div>
+                <div className="flex items-center justify-between gap-3 mb-5">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-wine/10 dark:bg-wine/25 text-wine dark:text-[#E2A6B3]">
+                    <Smartphone className="h-5 w-5" strokeWidth={1.8} />
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-wine/10 dark:bg-wine/25 px-3 py-1 text-[11px] font-semibold text-wine dark:text-[#E2A6B3]">
+                    <Clock className="h-3 w-3" />
+                    <span>Private Testing Preview · v1.0</span>
+                  </span>
+                </div>
+
+                <h3 className="text-lg font-bold text-charcoal dark:text-foreground">
+                  Android Native App
+                </h3>
+                <p className="mt-2 text-[13px] leading-relaxed text-muted dark:text-muted-foreground">
+                  Engineered with an edge-to-edge porcelain interface, hardware keyboard docking, persistent cryptographic session storage, and gesture back-navigation.
+                </p>
+
+                {/* Honest Status Notice Box */}
+                <div className="mt-5 rounded-2xl border border-stone-subtle dark:border-[#382833] bg-porcelain dark:bg-[#181216] p-4 text-[12px] leading-relaxed text-muted dark:text-stone/80">
+                  <p className="font-semibold text-charcoal dark:text-foreground mb-1 flex items-center gap-1.5">
+                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                    <span>Staging Verification Gate Active</span>
+                  </p>
+                  <p>
+                    The private testing APK (<code>com.nexustalks.app</code>) is currently provisioned for authorized staging testers. Signed public APK downloads and app store releases will open following staging verification.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-5 border-t border-stone-subtle dark:border-[#33252E] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[12px]">
+                <span className="text-muted-faint text-[11.5px]">
+                  Authorized tester? Check your internal distribution invite.
+                </span>
+                <Link
+                  href="/demo"
+                  className="font-semibold text-wine dark:text-[#F7B6C4] hover:underline inline-flex items-center gap-1 shrink-0"
+                >
+                  <span>Experience interactive demo</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Card 2: Universal Web App (PWA) */}
+            <div className="flex flex-col justify-between rounded-3xl border border-wine/25 dark:border-wine/35 glass-surface bg-white/90 dark:bg-[#241A21]/90 p-6 sm:p-7 shadow-xs">
+              <div>
+                <div className="flex items-center justify-between gap-3 mb-5">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-600/10 text-emerald-600 dark:text-emerald-400">
+                    <Laptop className="h-5 w-5" strokeWidth={1.8} />
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600/10 px-3 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
+                    <CheckCircle2 className="h-3 w-3" />
+                    <span>Instant Zero-Install Access</span>
+                  </span>
+                </div>
+
+                <h3 className="text-lg font-bold text-charcoal dark:text-foreground">
+                  Web Application (PWA)
+                </h3>
+                <p className="mt-2 text-[13px] leading-relaxed text-muted dark:text-muted-foreground">
+                  Install Nexus.talks directly to your home screen or desktop dock with zero app store delays. Full real-time messaging, audio, and avatar discovery.
+                </p>
+
+                {/* Quick Installation Instructions */}
+                <div className="mt-5 space-y-2 rounded-2xl border border-stone-subtle dark:border-[#382833] bg-porcelain dark:bg-[#181216] p-4 text-[12px] text-muted dark:text-stone/80">
+                  <div className="flex items-start gap-2">
+                    <span className="font-semibold text-charcoal dark:text-foreground shrink-0">Android (Chrome):</span>
+                    <span>Tap menu <strong className="text-charcoal dark:text-foreground">⋮</strong> → <strong className="text-charcoal dark:text-foreground">&ldquo;Add to Home screen&rdquo;</strong></span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-semibold text-charcoal dark:text-foreground shrink-0">iOS (Safari):</span>
+                    <span>Tap the <strong className="text-charcoal dark:text-foreground">Share</strong> icon → <strong className="text-charcoal dark:text-foreground">&ldquo;Add to Home Screen&rdquo;</strong></span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-semibold text-charcoal dark:text-foreground shrink-0">Desktop:</span>
+                    <span>Click the <strong className="text-charcoal dark:text-foreground">Install</strong> icon in your browser&apos;s address bar</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-5 border-t border-stone-subtle dark:border-[#33252E]">
+                {user ? (
+                  <Link
+                    href="/conversations"
+                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98]"
+                  >
+                    <span>Open Web Messenger</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                ) : (
+                  <Link
+                    href="/signup"
+                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98]"
+                  >
+                    <span>Launch Web Application</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* ── Three Pillars of Intimacy ────────────────────────────────────── */}
         <section aria-label="Core Philosophy" className="mt-20 border-t border-stone-subtle dark:border-[#30242B] pt-14">

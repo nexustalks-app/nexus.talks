@@ -119,7 +119,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${playfair.variable} ${plusJakarta.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${playfair.variable} ${plusJakarta.variable} scroll-smooth`}>
       <head>
         <script
           dangerouslySetInnerHTML={{ __html: themeBootstrapScript }}
