@@ -290,7 +290,7 @@ export function InstallAppDialog({ isOpen, onClose }: InstallAppDialogProps) {
                   </span>
                 </div>
                 <span className="inline-flex items-center gap-1 rounded-full bg-wine/10 dark:bg-wine/20 px-2.5 py-0.5 text-[11px] font-semibold text-wine dark:text-[#F7B6C4]">
-                  v1.0.0 Release
+                  v1.0.1 Release
                 </span>
               </div>
 
@@ -320,7 +320,7 @@ export function InstallAppDialog({ isOpen, onClose }: InstallAppDialogProps) {
                 <span>Verified Public Release Ready</span>
               </p>
               <p>
-                Signed production release (<code>nexus-talks-v1.0.0.apk</code>, 5.0 MB) is ready for direct installation.
+                Signed production release (<code>nexus-talks-v1.0.1.apk</code>, 5.0 MB) is ready for direct installation.
               </p>
               <div className="mt-2.5 rounded-xl bg-porcelain dark:bg-[#181216] border border-stone-subtle dark:border-[#33252E] p-2.5 text-[11.5px] text-muted-foreground">
                 <strong className="text-charcoal dark:text-foreground">Android Installation Note:</strong> When opening the APK, Android security will ask you to approve installation from your browser. Tap <em>Settings → Allow from this source</em> to complete installation.
@@ -329,8 +329,8 @@ export function InstallAppDialog({ isOpen, onClose }: InstallAppDialogProps) {
 
             <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
               <a
-                href="https://github.com/nexustalks-app/nexus.talks/releases/download/v1.0.0/nexus-talks-v1.0.0.apk"
-                download="nexus-talks-v1.0.0.apk"
+                href="https://github.com/nexustalks-app/nexus.talks/releases/download/v1.0.1/nexus-talks-v1.0.1.apk"
+                download="nexus-talks-v1.0.1.apk"
                 className="flex-1 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98] border-t border-white/20"
               >
                 <Download className="h-4 w-4" />

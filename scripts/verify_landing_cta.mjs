@@ -13,7 +13,7 @@ const pageContent = fs.readFileSync(pagePath, 'utf8');
 const hasHeroInstallCta = pageContent.includes('<HeroInstallCta');
 const hasSeeDemoBtn = pageContent.includes('See a Demo') && pageContent.includes('href="/demo"');
 const hasInstallSection = pageContent.includes('id="install"');
-const hasDirectApkDownload = pageContent.includes('nexus-talks-v1.0.0.apk');
+const hasDirectApkDownload = pageContent.includes('nexus-talks-v1.0.1.apk');
 
 console.log(`1. Landing Page checks:`);
 console.log(`   - Hero Install CTA mounted: ${hasHeroInstallCta}`);
@@ -24,7 +24,7 @@ console.log(`   - Direct APK download link in install section: ${hasDirectApkDow
 // 2. Hero Component checks
 const ctaPath = path.resolve(projectRoot, 'components/landing/hero-install-cta.tsx');
 const ctaContent = fs.existsSync(ctaPath) ? fs.readFileSync(ctaPath, 'utf8') : '';
-const expectedUrl = 'https://github.com/nexustalks-app/nexus.talks/releases/download/v1.0.0/nexus-talks-v1.0.0.apk';
+const expectedUrl = 'https://github.com/nexustalks-app/nexus.talks/releases/download/v1.0.1/nexus-talks-v1.0.1.apk';
 const hasCorrectReleaseUrl = ctaContent.includes(expectedUrl);
 const hasDownloadLabel = ctaContent.includes('Download Android App (.apk)');
 const hasPwaLabel = ctaContent.includes('Install Web App');

@@ -138,7 +138,7 @@ export default async function HomePage() {
             <div className="mt-3.5 flex flex-wrap items-center gap-2 text-[11.5px] text-muted dark:text-muted-foreground animate-fade-up delay-350">
               <span className="inline-flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-600/10 px-2.5 py-0.5 rounded-full">
                 <CheckCircle2 className="h-3 w-3" />
-                <span>Verified Release v1.0.0</span>
+                <span>Verified Release v1.0.1</span>
               </span>
               <span>•</span>
               <span className="font-mono text-charcoal dark:text-stone font-medium">5.0 MB APK</span>
@@ -306,7 +306,7 @@ export default async function HomePage() {
                   </div>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-wine/10 dark:bg-wine/25 px-3 py-1 text-[11px] font-semibold text-wine dark:text-[#E2A6B3]">
                     <ShieldCheck className="h-3 w-3 text-emerald-600" />
-                    <span>v1.0.0 Release · Target API 35</span>
+                    <span>v1.0.1 Release · Target API 35</span>
                   </span>
                 </div>
 
@@ -334,13 +334,13 @@ export default async function HomePage() {
 
               <div className="mt-6 pt-5 border-t border-stone-subtle dark:border-[#33252E] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-[12px]">
                 <a
-                  href="https://github.com/nexustalks-app/nexus.talks/releases/download/v1.0.0/nexus-talks-v1.0.0.apk"
-                  download="nexus-talks-v1.0.0.apk"
+                  href="https://github.com/nexustalks-app/nexus.talks/releases/download/v1.0.1/nexus-talks-v1.0.1.apk"
+                  download="nexus-talks-v1.0.1.apk"
                   className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98] px-5 border-t border-white/20"
-                  aria-label="Download Android App APK (v1.0.0, 5.0 MB)"
+                  aria-label="Download Android App APK (v1.0.1, 5.0 MB)"
                 >
                   <Download className="h-4 w-4" />
-                  <span>Download APK (v1.0.0 · 5.0 MB)</span>
+                  <span>Download APK (v1.0.1 · 5.0 MB)</span>
                 </a>
                 <Link
                   href="/demo"

@@ -5,8 +5,8 @@ import { Download, Laptop, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { InstallAppDialog } from './install-app-dialog';
 
 export const ANDROID_APK_DOWNLOAD_URL =
-  'https://github.com/nexustalks-app/nexus.talks/releases/download/v1.0.0/nexus-talks-v1.0.0.apk';
-export const ANDROID_APK_VERSION = 'v1.0.0';
+  'https://github.com/nexustalks-app/nexus.talks/releases/download/v1.0.1/nexus-talks-v1.0.1.apk';
+export const ANDROID_APK_VERSION = 'v1.0.1';
 export const ANDROID_APK_SIZE = '5.0 MB';
 
 interface HeroInstallCtaProps {
@@ -21,7 +21,7 @@ export function HeroInstallCta({ className, variant = 'primary' }: HeroInstallCt
     return (
       <a
         href={ANDROID_APK_DOWNLOAD_URL}
-        download="nexus-talks-v1.0.0.apk"
+        download="nexus-talks-v1.0.1.apk"
         className={
           className ||
           'inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98] border-t border-white/20'
@@ -40,7 +40,7 @@ export function HeroInstallCta({ className, variant = 'primary' }: HeroInstallCt
         {/* Direct APK Download Button */}
         <a
           href={ANDROID_APK_DOWNLOAD_URL}
-          download="nexus-talks-v1.0.0.apk"
+          download="nexus-talks-v1.0.1.apk"
           className="inline-flex h-12 sm:h-13 items-center justify-center gap-2.5 rounded-2xl bg-wine px-7 sm:px-8 text-[14.5px] font-semibold text-white shadow-md shadow-wine/25 transition-[background-color,transform,box-shadow] duration-150 ease-out hover:bg-wine-hover hover:scale-[1.02] active:scale-[0.98] border-t border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wine focus-visible:ring-offset-2"
           aria-label={`Download Android App APK (${ANDROID_APK_VERSION}, ${ANDROID_APK_SIZE})`}
         >
