@@ -71,11 +71,11 @@ export function ChatThemePickerModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 dark:bg-black/75 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 dark:bg-black/75 backdrop-blur-sm nx-backdrop-in"
       onClick={onClose}
     >
       <div
-        className="relative flex flex-col w-full max-w-4xl max-h-[92vh] sm:max-h-[88vh] rounded-3xl bg-white dark:bg-[#181116] border border-stone-subtle dark:border-white/10 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="relative flex flex-col w-full max-w-4xl max-h-[92vh] sm:max-h-[88vh] rounded-3xl bg-white dark:bg-[#181116] border border-stone-subtle dark:border-white/10 shadow-2xl overflow-hidden nx-dialog-enter"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── Modal Header ────────────────────────────────────────────────────── */}

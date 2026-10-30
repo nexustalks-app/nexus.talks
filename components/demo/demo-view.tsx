@@ -409,7 +409,7 @@ function DemoContactRow({
           {/* Subtitle / Preview / Live typing */}
           {isTyping ? (
             <div
-              className="flex items-center gap-1.5 text-wine dark:text-[#E2A6B3] font-medium text-[12px] sm:text-[12.5px] mt-0.5 leading-snug animate-in fade-in duration-150"
+              className="flex items-center gap-1.5 text-wine dark:text-[#E2A6B3] font-medium text-[12px] sm:text-[12.5px] mt-0.5 leading-snug nx-fade-in"
               aria-live="polite"
             >
               <span className="italic font-medium">typing</span>
@@ -2046,7 +2046,7 @@ export function DemoView() {
                 {/* Mobile dismiss backdrop when action toolbar is open */}
                 {activeMobileActionMsgId && (
                   <div
-                    className="fixed inset-0 z-40 bg-black/15 dark:bg-black/35 backdrop-blur-[2px] transition-opacity duration-150 animate-in fade-in"
+                    className="fixed inset-0 z-40 bg-black/15 dark:bg-black/35 backdrop-blur-[2px] transition-opacity duration-150 nx-backdrop-in"
                     onClick={(e) => {
                       e.stopPropagation();
                       setActiveMobileActionMsgId(null);
@@ -2219,7 +2219,7 @@ export function DemoView() {
                       <div
                         data-mobile-popover="true"
                         className={cn(
-                          'absolute z-50 flex flex-col gap-1.5 animate-in fade-in zoom-in-95 duration-150',
+                          'absolute z-50 flex flex-col gap-1.5 nx-popover-enter',
                           'max-w-[calc(100vw-32px)] select-none',
                           msg.isOwn ? 'right-0 items-end' : 'left-0 items-start',
                           mobileActionPlaceBelow ? 'top-[calc(100%+8px)]' : 'bottom-[calc(100%+8px)]'
@@ -2590,7 +2590,7 @@ export function DemoView() {
 
               {/* Floating New Messages Affordance */}
               {hasDemoNewMessagesBelow && (
-                <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-30 animate-in fade-in slide-in-from-bottom-2 duration-150">
+                <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-30 nx-banner-enter">
                   <button
                     type="button"
                     onClick={() => {
@@ -2768,12 +2768,12 @@ export function DemoView() {
                 <div
                   role="dialog"
                   aria-modal="true"
-                  className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-150"
+                  className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs nx-backdrop-in"
                   onClick={(e) => {
                     if (e.target === e.currentTarget) setDeletingMsgId(null);
                   }}
                 >
-                  <div className="liquid-glass-card w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 duration-150">
+                  <div className="liquid-glass-card w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl nx-dialog-enter">
                     <div className="flex items-start gap-3.5">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400">
                         <Trash2 className="h-5 w-5" />
@@ -3561,7 +3561,7 @@ export function DemoView() {
               role="menu"
               aria-label={`Options for ${targetContact.name}`}
               style={{ left: `${posX}px`, top: `${posY}px` }}
-              className="fixed z-50 min-w-[200px] rounded-2xl bg-white/95 dark:bg-[#201B22]/95 backdrop-blur-xl border border-stone-subtle/80 dark:border-white/10 shadow-2xl p-1.5 animate-in fade-in zoom-in-95 duration-100 select-none text-charcoal dark:text-stone"
+              className="fixed z-50 min-w-[200px] rounded-2xl bg-white/95 dark:bg-[#201B22]/95 backdrop-blur-xl border border-stone-subtle/80 dark:border-white/10 shadow-2xl p-1.5 nx-popover-enter select-none text-charcoal dark:text-stone"
             >
               {/* Header / Contact Identifier */}
               <div className="px-2.5 py-1.5 border-b border-stone-subtle/40 dark:border-white/[0.06] mb-1">

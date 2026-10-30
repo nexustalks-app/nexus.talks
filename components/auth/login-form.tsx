@@ -175,7 +175,7 @@ export function LoginForm() {
       {notice && (
         <div
           role="status"
-          className="flex items-start gap-2.5 rounded-xl border border-emerald-600/30 bg-emerald-500/10 px-4 py-3 text-[13px] text-emerald-800 dark:text-emerald-300 backdrop-blur-sm leading-relaxed animate-in fade-in slide-in-from-top-1 duration-200"
+          className="flex items-start gap-2.5 rounded-xl border border-emerald-600/30 bg-emerald-500/10 px-4 py-3 text-[13px] text-emerald-800 dark:text-emerald-300 backdrop-blur-sm leading-relaxed nx-fade-in"
         >
           <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
           <span className="flex-1">{notice}</span>
@@ -186,7 +186,7 @@ export function LoginForm() {
       {resendMessage && (
         <div
           role="status"
-          className="flex items-start gap-2.5 rounded-xl border border-emerald-600/30 bg-emerald-500/10 px-4 py-3 text-[13px] text-emerald-800 dark:text-emerald-300 backdrop-blur-sm leading-relaxed animate-in fade-in slide-in-from-top-1 duration-200"
+          className="flex items-start gap-2.5 rounded-xl border border-emerald-600/30 bg-emerald-500/10 px-4 py-3 text-[13px] text-emerald-800 dark:text-emerald-300 backdrop-blur-sm leading-relaxed nx-fade-in"
         >
           <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
           <span className="flex-1">{resendMessage}</span>
@@ -197,7 +197,7 @@ export function LoginForm() {
       {error && (
         <div
           role="alert"
-          className="flex flex-col gap-2 rounded-xl border border-rose/30 bg-rose/10 dark:bg-rose/20 px-4 py-3 text-[13px] text-wine dark:text-[#F7B6C4] backdrop-blur-sm leading-relaxed animate-in fade-in slide-in-from-top-1 duration-200"
+          className="flex flex-col gap-2 rounded-xl border border-rose/30 bg-rose/10 dark:bg-rose/20 px-4 py-3 text-[13px] text-wine dark:text-[#F7B6C4] backdrop-blur-sm leading-relaxed nx-fade-in"
         >
           <div className="flex items-start gap-2.5">
             <AlertCircle className="h-4 w-4 shrink-0 text-wine dark:text-[#F7B6C4] mt-0.5" />

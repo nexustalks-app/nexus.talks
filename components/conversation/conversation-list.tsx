@@ -973,7 +973,7 @@ export function ConversationList({ currentUserId }: ConversationListProps) {
           <>
             {/* Transparent backdrop to catch outside clicks and dismiss */}
             <div
-              className="fixed inset-0 z-50 bg-black/10 dark:bg-black/30 backdrop-blur-[1px]"
+              className="fixed inset-0 z-50 bg-black/10 dark:bg-black/30 backdrop-blur-[1px] nx-backdrop-in"
               onClick={() => setContextMenu(null)}
               onContextMenu={(e) => {
                 e.preventDefault();
@@ -986,7 +986,7 @@ export function ConversationList({ currentUserId }: ConversationListProps) {
               role="menu"
               aria-label={`Options for ${targetConv.name}`}
               style={{ left: `${posX}px`, top: `${posY}px` }}
-              className="fixed z-50 min-w-[200px] rounded-2xl bg-white/95 dark:bg-[#201B22]/95 backdrop-blur-xl border border-stone-subtle/80 dark:border-white/10 shadow-2xl p-1.5 animate-in fade-in zoom-in-95 duration-100 select-none text-charcoal dark:text-stone"
+              className="fixed z-50 min-w-[200px] rounded-2xl bg-white/95 dark:bg-[#201B22]/95 backdrop-blur-xl border border-stone-subtle/80 dark:border-white/10 shadow-2xl p-1.5 nx-popover-enter select-none text-charcoal dark:text-stone"
             >
               {/* Header / Conversation Identifier */}
               <div className="px-2.5 py-1.5 border-b border-stone-subtle/40 dark:border-white/[0.06] mb-1">

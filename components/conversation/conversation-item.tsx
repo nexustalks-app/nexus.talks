@@ -347,7 +347,7 @@ export function ConversationItem({
             {/* Real-time typing indicator takes priority over message snippet */}
             {isTyping ? (
               <div
-                className="flex items-center gap-1.5 text-wine dark:text-[#E2A6B3] font-medium text-[12px] sm:text-[12.5px] leading-snug animate-in fade-in duration-150"
+                className="flex items-center gap-1.5 text-wine dark:text-[#E2A6B3] font-medium text-[12px] sm:text-[12.5px] leading-snug nx-fade-in"
                 aria-live="polite"
               >
                 <span className="italic font-medium">typing</span>
@@ -405,7 +405,7 @@ export function ConversationItem({
             )}
             {isNavigating ? (
               <span
-                className="flex shrink-0 items-center gap-1 text-[11px] font-medium text-wine dark:text-[#F3B3C2] animate-in fade-in duration-150"
+                className="flex shrink-0 items-center gap-1 text-[11px] font-medium text-wine dark:text-[#F3B3C2] nx-fade-in"
                 title="Opening conversation…"
               >
                 <Loader2 className="h-3 w-3 animate-spin" />

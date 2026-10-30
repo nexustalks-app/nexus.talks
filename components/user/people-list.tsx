@@ -245,7 +245,7 @@ export function PeopleList({ currentUserId }: PeopleListProps) {
 
           {/* 1. Default State: No search performed yet */}
           {!searched && !loading && (
-            <div className="liquid-glass-card mx-auto max-w-lg rounded-3xl p-8 sm:p-10 text-center shadow-lg animate-in fade-in duration-300">
+            <div className="liquid-glass-card mx-auto max-w-lg rounded-3xl p-8 sm:p-10 text-center shadow-lg nx-fade-in">
               <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-wine/10 dark:bg-wine/25 text-wine dark:text-[#E2A6B3] shadow-xs">
                 <Search className="h-7 w-7" strokeWidth={1.8} />
               </div>
@@ -282,7 +282,7 @@ export function PeopleList({ currentUserId }: PeopleListProps) {
 
           {/* 3. Result Found */}
           {!loading && searched && result && (
-            <div className="mx-auto max-w-lg space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-200">
+            <div className="mx-auto max-w-lg space-y-4 nx-banner-enter">
               <div className="flex items-center justify-between px-2">
                 <span className="text-[12.5px] font-semibold text-muted dark:text-muted-foreground uppercase tracking-wider">
                   Member Found
@@ -302,7 +302,7 @@ export function PeopleList({ currentUserId }: PeopleListProps) {
 
           {/* 4. No Result Found */}
           {!loading && searched && !result && !error && (
-            <div className="liquid-glass-card mx-auto max-w-lg rounded-3xl p-8 sm:p-10 text-center shadow-lg animate-in fade-in duration-200">
+            <div className="liquid-glass-card mx-auto max-w-lg rounded-3xl p-8 sm:p-10 text-center shadow-lg nx-fade-in">
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-stone/50 dark:bg-[#2F232B] text-muted shadow-xs">
                 <UserX className="h-7 w-7 text-muted" strokeWidth={1.8} />
               </div>

@@ -320,7 +320,7 @@ export function ConversationInfoCenter({
       <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-5 space-y-6">
         {/* ── 1. OVERVIEW TAB ────────────────────────────────────────────────── */}
         {activeTab === 'overview' && (
-          <div className="space-y-6 animate-in fade-in duration-150">
+          <div className="space-y-6 nx-fade-in">
             {/* Identity Banner */}
             <div className="flex flex-col items-center text-center pt-2">
               <div className="relative shrink-0">
@@ -534,7 +534,7 @@ export function ConversationInfoCenter({
 
         {/* ── 2. SHARED MEDIA TAB ────────────────────────────────────────────── */}
         {activeTab === 'media' && (
-          <div className="space-y-4 animate-in fade-in duration-150">
+          <div className="space-y-4 nx-fade-in">
             <div className="flex items-center justify-between px-0.5">
               <span className="text-xs font-semibold uppercase tracking-wider text-charcoal dark:text-[#EDE8EC]">
                 Shared Media
@@ -584,7 +584,7 @@ export function ConversationInfoCenter({
 
         {/* ── 3. SHARED FILES TAB ────────────────────────────────────────────── */}
         {activeTab === 'files' && (
-          <div className="space-y-4 animate-in fade-in duration-150">
+          <div className="space-y-4 nx-fade-in">
             <div className="flex items-center justify-between px-0.5">
               <span className="text-xs font-semibold uppercase tracking-wider text-charcoal dark:text-[#EDE8EC]">
                 Shared Documents &amp; Files
@@ -646,7 +646,7 @@ export function ConversationInfoCenter({
 
         {/* ── 4. SHARED LINKS TAB ────────────────────────────────────────────── */}
         {activeTab === 'links' && (
-          <div className="space-y-4 animate-in fade-in duration-150">
+          <div className="space-y-4 nx-fade-in">
             <div className="flex items-center justify-between px-0.5">
               <span className="text-xs font-semibold uppercase tracking-wider text-charcoal dark:text-[#EDE8EC]">
                 Shared Links
@@ -702,7 +702,7 @@ export function ConversationInfoCenter({
 
         {/* ── 5. PINNED & SAVED MOMENTS TAB ──────────────────────────────────── */}
         {activeTab === 'pinned' && (
-          <div className="space-y-4 animate-in fade-in duration-150">
+          <div className="space-y-4 nx-fade-in">
             <div className="flex items-center justify-between px-0.5">
               <span className="text-xs font-semibold uppercase tracking-wider text-charcoal dark:text-[#EDE8EC]">
                 Saved Moments &amp; Pinned
@@ -746,7 +746,7 @@ export function ConversationInfoCenter({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md nx-backdrop-in"
           onClick={() => setPreviewMediaUrl(null)}
         >
           <button
@@ -761,7 +761,7 @@ export function ConversationInfoCenter({
           <img
             src={previewMediaUrl}
             alt="Full size media preview"
-            className="max-h-[85vh] max-w-[90vw] object-contain rounded-2xl shadow-2xl"
+            className="max-h-[85vh] max-w-[90vw] object-contain rounded-2xl shadow-2xl nx-dialog-enter"
             onClick={(e) => e.stopPropagation()}
           />
         </div>
@@ -786,11 +786,11 @@ export function ConversationInfoCenter({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex justify-end bg-black/50 dark:bg-black/70 backdrop-blur-xs animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex justify-end bg-black/50 dark:bg-black/70 backdrop-blur-xs nx-backdrop-in"
       onClick={onClose}
     >
       <div
-        className="w-full sm:max-w-md h-full bg-white dark:bg-[#181116] shadow-2xl overflow-hidden animate-in slide-in-from-right duration-200"
+        className="w-full sm:max-w-md h-full bg-white dark:bg-[#181116] shadow-2xl overflow-hidden nx-drawer-enter"
         onClick={(e) => e.stopPropagation()}
       >
         {content}

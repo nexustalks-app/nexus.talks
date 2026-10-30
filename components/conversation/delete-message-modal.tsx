@@ -48,14 +48,14 @@ export function DeleteMessageModal({
       aria-modal="true"
       aria-labelledby="delete-dialog-title"
       aria-describedby="delete-dialog-description"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs nx-backdrop-in"
       onClick={(e) => {
         if (e.target === e.currentTarget && !isDeleting) {
           onCancel();
         }
       }}
     >
-      <div className="liquid-glass-card w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 duration-150">
+      <div className="liquid-glass-card w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl nx-dialog-enter">
         <div className="flex items-start gap-3.5">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400">
             <Trash2 className="h-5 w-5" />

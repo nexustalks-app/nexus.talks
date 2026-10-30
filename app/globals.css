@@ -477,6 +477,188 @@ html.nx-theme-transition .nx-living-canvas {
   animation: nxStageEnter 140ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* ─── Living Porcelain Motion System: Modals, Popovers & Shimmers ─────── */
+
+@keyframes nxBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes nxBackdropOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes nxDialogEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes nxDialogExit {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0) scale(0.97);
+  }
+}
+
+@keyframes nxSheetEnter {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes nxSheetExit {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+@keyframes nxPopoverEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes nxPopoverExit {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -4px, 0) scale(0.96);
+  }
+}
+
+@keyframes nxReactionPop {
+  0% { transform: scale(0.85); }
+  45% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+@keyframes nxBannerEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes nxDrawerEnter {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes nxShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Composite-only Motion Classes */
+.nx-dialog-enter {
+  animation: nxDialogEnter 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.nx-dialog-exit {
+  animation: nxDialogExit 150ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.nx-backdrop-in {
+  animation: nxBackdropIn 160ms ease-out both;
+}
+
+.nx-backdrop-out {
+  animation: nxBackdropOut 140ms ease-in both;
+}
+
+.nx-sheet-enter {
+  animation: nxSheetEnter 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.nx-sheet-exit {
+  animation: nxSheetExit 180ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.nx-drawer-enter {
+  animation: nxDrawerEnter 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.nx-popover-enter {
+  animation: nxPopoverEnter 140ms cubic-bezier(0.175, 0.885, 0.32, 1.25) both;
+}
+
+.nx-popover-exit {
+  animation: nxPopoverExit 120ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.nx-reaction-pop {
+  animation: nxReactionPop 180ms cubic-bezier(0.175, 0.885, 0.32, 1.25) both;
+}
+
+.nx-banner-enter {
+  animation: nxBannerEnter 150ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Hardware-accelerated fallback rules for existing animate-in patterns */
+.animate-in {
+  animation-duration: 180ms;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-in.fade-in {
+  animation-name: nxFadeIn;
+}
+
+.animate-in.zoom-in-95 {
+  animation-name: nxScaleIn;
+}
+
+.animate-in.fade-in.zoom-in-95 {
+  animation-name: nxDialogEnter;
+}
+
+.animate-in.slide-in-from-top-1,
+.animate-in.slide-in-from-top-2 {
+  animation-name: nxFadeIn;
+}
+
+.animate-in.slide-in-from-bottom-2 {
+  animation-name: nxBannerEnter;
+}
+
+.animate-in.slide-in-from-right {
+  animation-name: nxDrawerEnter;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html.nx-theme-transition,
   html.nx-theme-transition body,
@@ -493,11 +675,51 @@ html.nx-theme-transition .nx-living-canvas {
   .nx-fade-in,
   .nx-scale-in,
   .nx-stage-enter,
+  .nx-dialog-enter,
+  .nx-dialog-exit,
+  .nx-backdrop-in,
+  .nx-backdrop-out,
+  .nx-sheet-enter,
+  .nx-sheet-exit,
+  .nx-popover-enter,
+  .nx-popover-exit,
+  .nx-reaction-pop,
+  .nx-banner-enter,
+  .animate-in,
   [class*="animate-"] {
     animation: none !important;
     transform: none !important;
     transition: none !important;
   }
+  [class*="after:animate-"]::after {
+    animation: none !important;
+    display: none !important;
+  }
+}
+
+.nx-reduce-motion .nx-dialog-enter,
+.nx-reduce-motion .nx-dialog-exit,
+.nx-reduce-motion .nx-backdrop-in,
+.nx-reduce-motion .nx-backdrop-out,
+.nx-reduce-motion .nx-sheet-enter,
+.nx-reduce-motion .nx-sheet-exit,
+.nx-reduce-motion .nx-popover-enter,
+.nx-reduce-motion .nx-popover-exit,
+.nx-reduce-motion .nx-reaction-pop,
+.nx-reduce-motion .nx-banner-enter,
+.nx-disable-anim .nx-dialog-enter,
+.nx-disable-anim .nx-dialog-exit,
+.nx-disable-anim .nx-backdrop-in,
+.nx-disable-anim .nx-backdrop-out,
+.nx-disable-anim .nx-sheet-enter,
+.nx-disable-anim .nx-sheet-exit,
+.nx-disable-anim .nx-popover-enter,
+.nx-disable-anim .nx-popover-exit,
+.nx-disable-anim .nx-reaction-pop,
+.nx-disable-anim .nx-banner-enter {
+  animation: none !important;
+  transform: none !important;
+  transition: none !important;
 }
 
 /* ─── Base ─────────────────────────────────────────────────────────────── */

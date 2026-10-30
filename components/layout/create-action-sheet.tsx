@@ -152,7 +152,7 @@ export function CreateActionSheet({ open, onClose }: CreateActionSheetProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-sheet-title"
-      className="fixed inset-0 z-50 flex flex-col justify-end md:items-center md:justify-center p-0 md:p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex flex-col justify-end md:items-center md:justify-center p-0 md:p-4 nx-backdrop-in"
     >
       {/* Backdrop */}
       <div
@@ -170,7 +170,7 @@ export function CreateActionSheet({ open, onClose }: CreateActionSheetProps) {
           'border border-stone/80 dark:border-[#4A3843]/80',
           'shadow-2xl shadow-charcoal/25 dark:shadow-black/70',
           'pb-[calc(1.75rem+env(safe-area-inset-bottom))] md:pb-6 pt-3 px-4 sm:px-6',
-          'animate-in slide-in-from-bottom-6 md:zoom-in-95 duration-200 ease-out',
+          'nx-sheet-enter md:nx-dialog-enter',
         )}
       >
         {/* Drag Handle Bar (mobile visual cue) */}

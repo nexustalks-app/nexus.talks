@@ -220,7 +220,7 @@ export function MessageInput({
       <div className="mx-auto w-full max-w-3xl">
         {/* ── Editing Message Banner ────────────────────────────────────────── */}
         {editingMessage && (
-          <div className="mb-2.5 flex items-center justify-between gap-3 rounded-xl border border-wine/25 bg-wine/10 dark:border-white/10 dark:bg-[#28252c] px-3.5 py-2 shadow-xs transition-all animate-in fade-in slide-in-from-bottom-2 duration-150">
+          <div className="mb-2.5 flex items-center justify-between gap-3 rounded-xl border border-wine/25 bg-wine/10 dark:border-white/10 dark:bg-[#28252c] px-3.5 py-2 shadow-xs nx-banner-enter">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="h-7 w-1 rounded-full bg-wine dark:bg-white/70 shrink-0" />
               <Pencil className="h-3.5 w-3.5 text-wine dark:text-white/80 shrink-0" />
@@ -247,7 +247,7 @@ export function MessageInput({
 
         {/* ── Quoted Reply Banner above composer ────────────────────────────── */}
         {!editingMessage && replyingTo && (
-          <div className="mb-2.5 flex items-center justify-between gap-3 rounded-xl border border-wine/25 bg-wine/10 dark:border-white/10 dark:bg-[#28252c] px-3.5 py-2 shadow-xs transition-all animate-in fade-in slide-in-from-bottom-2 duration-150">
+          <div className="mb-2.5 flex items-center justify-between gap-3 rounded-xl border border-wine/25 bg-wine/10 dark:border-white/10 dark:bg-[#28252c] px-3.5 py-2 shadow-xs nx-banner-enter">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="h-7 w-1 rounded-full bg-wine dark:bg-white/70 shrink-0" />
               <Reply className="h-3.5 w-3.5 text-wine dark:text-white/80 shrink-0" />
@@ -352,13 +352,15 @@ export function MessageInput({
                 : 'bg-black/[0.03] dark:bg-[#2c2a30] hover:bg-black/[0.06] dark:hover:bg-[#343138] border border-black/[0.06] dark:border-white/[0.08] text-[var(--foreground-muted)] dark:text-[#8e8a91] hover:text-[var(--foreground)] dark:hover:text-white',
             )}
           >
-            {editingMessage ? (
-              <Check className="h-4 w-4 stroke-[2.4]" />
-            ) : canSubmit ? (
-              <ArrowUp className="h-4 w-4 stroke-[2.4]" />
-            ) : (
-              <Mic className="h-4 w-4" />
-            )}
+            <span className="relative flex items-center justify-center h-4 w-4">
+              {editingMessage ? (
+                <Check key="check" className="h-4 w-4 stroke-[2.4] animate-icon-spring" />
+              ) : canSubmit ? (
+                <ArrowUp key="send" className="h-4 w-4 stroke-[2.4] animate-icon-spring" />
+              ) : (
+                <Mic key="mic" className="h-4 w-4 animate-icon-spring" />
+              )}
+            </span>
           </button>
         </div>
       </div>

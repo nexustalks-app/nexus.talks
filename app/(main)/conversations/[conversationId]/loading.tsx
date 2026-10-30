@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ConversationLoading() {
   return (
-    <div className="flex h-full min-h-0 flex-col bg-white">
+    <div className="flex h-full min-h-0 flex-col bg-white dark:bg-[#19171b] nx-fade-in">
       {/* Header bar skeleton */}
       <div className="flex h-16 shrink-0 items-center gap-3 border-b border-stone px-4 sm:px-6">
         <Skeleton className="h-10 w-10 rounded-full" />

@@ -1375,7 +1375,7 @@ export function MessageList({
     <div className="relative flex flex-1 min-h-0 flex-col bg-[var(--pane-chat-bg)] dark:bg-[#19171b] dark:bg-[radial-gradient(ellipse_at_50%_40%,#262329_0%,#1a181d_70%,#131215_100%)] text-[var(--foreground)] dark:text-white transition-colors duration-150">
       {/* ── In-Conversation Search Bar ──────────────────────────────────────── */}
       {searchOpen && (
-        <div className="shrink-0 border-b border-[var(--border)] bg-[var(--surface)]/90 backdrop-blur-md px-4 py-2.5 flex items-center gap-2.5 animate-in slide-in-from-top-2 duration-150">
+        <div className="shrink-0 border-b border-[var(--border)] bg-[var(--surface)]/90 backdrop-blur-md px-4 py-2.5 flex items-center gap-2.5 nx-fade-in">
           <Search className="h-4 w-4 text-wine dark:text-[#F3B3C2] shrink-0" />
           <input
             type="search"
@@ -1523,7 +1523,7 @@ export function MessageList({
 
               {/* ── Active Typing Indicator Bubble ────────────────────────────── */}
               {isOtherParticipantTyping && (
-                <div className="flex items-center gap-2 py-2 px-3.5 rounded-2xl bg-porcelain dark:bg-[#251D22] border border-stone/80 dark:border-[#3B2C34] w-fit shadow-xs animate-in fade-in slide-in-from-bottom-2 duration-150 mt-2 select-none">
+                <div className="flex items-center gap-2 py-2 px-3.5 rounded-2xl bg-porcelain dark:bg-[#251D22] border border-stone/80 dark:border-[#3B2C34] w-fit shadow-xs nx-banner-enter mt-2 select-none">
                   <span className="text-[11.5px] font-medium text-muted dark:text-muted-foreground">
                     {participantName} is typing
                   </span>
@@ -1550,7 +1550,7 @@ export function MessageList({
 
       {/* ── Floating New Messages Affordance ───────────────────────────────── */}
       {hasNewMessagesBelow && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 animate-in fade-in slide-in-from-bottom-2 duration-150">
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 nx-banner-enter">
           <button
             type="button"
             onClick={() => {

@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProfileLoading() {
   return (
-    <div className="h-full overflow-y-auto overscroll-contain bg-porcelain dark:bg-[var(--background)] animate-in fade-in duration-150">
+    <div className="h-full overflow-y-auto overscroll-contain bg-porcelain dark:bg-[var(--background)] nx-fade-in">
       <div className="mx-auto flex min-h-full w-full max-w-2xl flex-col items-center justify-start px-4 py-6 pb-28 sm:px-6 sm:py-8 sm:pb-16">
         <header className="mb-4 flex w-full items-center justify-between">
           <Skeleton className="h-8 w-28 rounded-xl bg-stone/70 dark:bg-white/10" />

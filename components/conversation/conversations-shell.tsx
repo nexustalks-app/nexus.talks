@@ -33,7 +33,7 @@ function ConversationsShellInner({
         <aside
           role="alert"
           aria-live="polite"
-          className="absolute top-3 left-4 right-4 z-50 flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl text-xs font-medium shadow-lg transition-all animate-in fade-in slide-in-from-top-2 bg-[#542C38] text-white border border-[#6A3947]/40"
+          className="absolute top-3 left-4 right-4 z-50 flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl text-xs font-medium shadow-lg transition-all nx-fade-in bg-[#542C38] text-white border border-[#6A3947]/40"
         >
           <div className="flex items-center gap-2 min-w-0">
             <AlertCircle className="w-4 h-4 text-amber-300 shrink-0" />

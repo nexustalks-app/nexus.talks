@@ -326,16 +326,16 @@ export const MessageItem = memo(function MessageItem({
       aria-label={`${isOwn ? 'You' : participantName}: ${isDeleted ? 'Deleted message' : message.content}`}
       onKeyDown={handleKeyDown}
       className={cn(
-        'group flex flex-col outline-none focus-visible:ring-1 focus-visible:ring-wine/40 rounded-2xl transition-all duration-150',
+        'group flex flex-col outline-none focus-visible:ring-1 focus-visible:ring-wine/40 rounded-2xl transition-[opacity,transform] duration-150',
         isActionsOpen ? 'z-40 relative' : 'relative',
         isOwn ? 'items-end' : 'items-start',
-        isNew && 'animate-message-enter',
+        isNew && 'animate-message-enter will-change-transform',
       )}
     >
       {/* ── Mobile Contextual Actions Backdrop ──────────────────────────────── */}
       {isActionsOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/15 dark:bg-black/35 backdrop-blur-[2px] transition-opacity duration-150 animate-in fade-in"
+          className="fixed inset-0 z-40 bg-black/15 dark:bg-black/35 backdrop-blur-[2px] nx-backdrop-in"
           onClick={(e) => {
             e.stopPropagation();
             setActionsOpen(false);
@@ -430,7 +430,7 @@ export const MessageItem = memo(function MessageItem({
                 type="button"
                 onClick={() => onEcho?.(message)}
                 className={cn(
-                  'flex h-6 w-6 items-center justify-center rounded-full active:scale-90 transition-all',
+                  'flex h-6 w-6 items-center justify-center rounded-full active:scale-85 active:nx-reaction-pop transition-all duration-120 ease-spring',
                   isEchoed
                     ? 'text-wine dark:text-[#F3B3C2] bg-wine/10 dark:bg-wine/30'
                     : 'text-muted hover:text-wine dark:hover:text-[#F3B3C2] hover:bg-stone/50 dark:hover:bg-[#382832]'
@@ -438,7 +438,7 @@ export const MessageItem = memo(function MessageItem({
                 title={isEchoed ? 'Saved in Echoes' : 'Save to Echoes'}
                 aria-label={isEchoed ? 'Saved in Echoes' : 'Save to Echoes'}
               >
-                <Bookmark className={cn('h-3 w-3', isEchoed && 'fill-current')} />
+                <Bookmark className={cn('h-3 w-3', isEchoed && 'fill-current animate-icon-spring')} />
               </button>
             </div>
           </div>
@@ -454,7 +454,7 @@ export const MessageItem = memo(function MessageItem({
           onContextMenu={handleContextMenu}
           className={cn(
             'relative w-fit max-w-[85%] sm:max-w-[78%] px-4 py-2.5 touch-pan-y select-none sm:select-text cursor-pointer sm:cursor-default',
-            'transition-[border-radius,background-color,color,border-color,box-shadow,ring,transform] duration-150 ease-out',
+            'transition-[background-color,color,border-color,opacity,transform] duration-150 ease-smooth',
             isActionsOpen && 'scale-[1.01] ring-2 ring-wine dark:ring-[#F3B3C2] shadow-xl',
             isHighlighted &&
               'ring-2 ring-wine ring-offset-2 ring-offset-porcelain dark:ring-offset-[#1C1619] shadow-md',
@@ -720,7 +720,7 @@ export const MessageItem = memo(function MessageItem({
                 type="button"
                 onClick={() => onEcho?.(message)}
                 className={cn(
-                  'flex h-6 w-6 items-center justify-center rounded-full active:scale-90 transition-all',
+                  'flex h-6 w-6 items-center justify-center rounded-full active:scale-85 active:nx-reaction-pop transition-all duration-120 ease-spring',
                   isEchoed
                     ? 'text-wine dark:text-[#F3B3C2] bg-wine/10 dark:bg-wine/30'
                     : 'text-muted hover:text-wine dark:hover:text-[#F3B3C2] hover:bg-stone/50 dark:hover:bg-[#382832]'
@@ -728,7 +728,7 @@ export const MessageItem = memo(function MessageItem({
                 title={isEchoed ? 'Saved in Echoes' : 'Save to Echoes'}
                 aria-label={isEchoed ? 'Saved in Echoes' : 'Save to Echoes'}
               >
-                <Bookmark className={cn('h-3 w-3', isEchoed && 'fill-current')} />
+                <Bookmark className={cn('h-3 w-3', isEchoed && 'fill-current animate-icon-spring')} />
               </button>
             </div>
           </div>
@@ -739,7 +739,7 @@ export const MessageItem = memo(function MessageItem({
           <div
             data-mobile-popover="true"
             className={cn(
-              'absolute z-50 flex flex-col gap-1.5 animate-in fade-in zoom-in-95 duration-150',
+              'absolute z-50 flex flex-col gap-1.5 nx-popover-enter',
               'max-w-[calc(100vw-32px)] select-none',
               isOwn ? 'right-0 items-end' : 'left-0 items-start',
               placeBelow ? 'top-[calc(100%+8px)]' : 'bottom-[calc(100%+8px)]'
@@ -759,7 +759,7 @@ export const MessageItem = memo(function MessageItem({
                       setActionsOpen(false);
                     }}
                     className={cn(
-                      'flex h-9 w-9 items-center justify-center rounded-full text-base hover:scale-120 active:scale-90 transition-transform duration-120',
+                      'flex h-9 w-9 items-center justify-center rounded-full text-base hover:scale-120 active:scale-85 active:nx-reaction-pop transition-transform duration-120 ease-spring',
                       hasReacted && 'bg-wine/15 dark:bg-wine/30 ring-1.5 ring-wine dark:ring-[#F3B3C2]'
                     )}
                     title={`React with ${emoji}`}
@@ -861,7 +861,7 @@ export const MessageItem = memo(function MessageItem({
         <div
           role="alert"
           aria-live="polite"
-          className="mt-1 flex items-center gap-2 text-xs text-red-600 dark:text-red-400 select-none animate-in fade-in duration-150 pr-1 justify-end"
+          className="mt-1 flex items-center gap-2 text-xs text-red-600 dark:text-red-400 select-none nx-fade-in pr-1 justify-end"
         >
           <span className="text-[11px] font-medium flex items-center gap-1">
             <AlertCircle className="h-3 w-3 shrink-0" />
@@ -904,7 +904,7 @@ export const MessageItem = memo(function MessageItem({
               onClick={() => onToggleReaction?.(message.id, chip.emoji)}
               aria-label={`${chip.hasReacted ? 'Remove' : 'Add'} reaction ${chip.emoji}, ${chip.count} reactions`}
               className={cn(
-                'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11.5px] font-medium border transition-transform duration-120 ease-spring hover:scale-105 active:scale-90',
+                'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11.5px] font-medium border transition-transform duration-120 ease-spring hover:scale-105 active:scale-90 active:nx-reaction-pop',
                 chip.hasReacted
                   ? 'border-wine/40 bg-wine/15 text-wine dark:text-[#F3B3C2] dark:border-wine/50 dark:bg-wine/30 font-semibold shadow-2xs ring-1 ring-wine/25'
                   : 'border-stone/90 dark:border-[#3B2C34] bg-white/95 dark:bg-[#251D22] text-charcoal dark:text-foreground hover:bg-porcelain dark:hover:bg-[#2F242B] shadow-2xs',

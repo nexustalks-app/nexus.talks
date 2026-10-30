@@ -126,16 +126,53 @@ const config: Config = {
           "100%": { opacity: "1", transform: "translate3d(0, 0, 0)" },
         },
         "dialog-enter": {
-          "0%": { opacity: "0", transform: "translate3d(0, 8px, 0) scale(0.98)" },
+          "0%": { opacity: "0", transform: "translate3d(0, 10px, 0) scale(0.97)" },
           "100%": { opacity: "1", transform: "translate3d(0, 0, 0) scale(1)" },
+        },
+        "dialog-exit": {
+          "0%": { opacity: "1", transform: "translate3d(0, 0, 0) scale(1)" },
+          "100%": { opacity: "0", transform: "translate3d(0, 8px, 0) scale(0.97)" },
         },
         "backdrop-fade": {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        "backdrop-exit": {
+          "0%": { opacity: "1" },
+          "100%": { opacity: "0" },
+        },
         "popover-enter": {
-          "0%": { opacity: "0", transform: "translate3d(0, -4px, 0) scale(0.98)" },
+          "0%": { opacity: "0", transform: "translate3d(0, -6px, 0) scale(0.94)" },
           "100%": { opacity: "1", transform: "translate3d(0, 0, 0) scale(1)" },
+        },
+        "popover-exit": {
+          "0%": { opacity: "1", transform: "translate3d(0, 0, 0) scale(1)" },
+          "100%": { opacity: "0", transform: "translate3d(0, -4px, 0) scale(0.96)" },
+        },
+        "sheet-enter": {
+          "0%": { transform: "translate3d(0, 100%, 0)" },
+          "100%": { transform: "translate3d(0, 0, 0)" },
+        },
+        "sheet-exit": {
+          "0%": { transform: "translate3d(0, 0, 0)" },
+          "100%": { transform: "translate3d(0, 100%, 0)" },
+        },
+        "reaction-pop": {
+          "0%": { transform: "scale(0.85)" },
+          "45%": { transform: "scale(1.18)" },
+          "100%": { transform: "scale(1)" },
+        },
+        "icon-spring": {
+          "0%": { transform: "rotate(-35deg) scale(0.75)", opacity: "0" },
+          "100%": { transform: "rotate(0deg) scale(1)", opacity: "1" },
+        },
+        "banner-enter": {
+          "0%": { opacity: "0", transform: "translate3d(0, 8px, 0)" },
+          "100%": { opacity: "1", transform: "translate3d(0, 0, 0)" },
+        },
+        "nx-shimmer": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
         },
       },
       animation: {
@@ -146,11 +183,20 @@ const config: Config = {
         "ambient-float": "ambient-float 16s ease-in-out infinite",
         "typing-dot": "typing-dot 1.2s infinite ease-in-out",
         "slide-up": "slide-up 180ms cubic-bezier(0.16, 1, 0.3, 1) both",
-        "message-enter": "message-enter 150ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "message-enter": "message-enter 160ms cubic-bezier(0.16, 1, 0.3, 1) both",
         "stage-enter": "stage-enter 140ms cubic-bezier(0.16, 1, 0.3, 1) both",
         "dialog-enter": "dialog-enter 200ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "dialog-exit": "dialog-exit 150ms cubic-bezier(0.2, 0, 0, 1) both",
         "backdrop-fade": "backdrop-fade 160ms ease-out both",
-        "popover-enter": "popover-enter 130ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "backdrop-exit": "backdrop-exit 140ms ease-in both",
+        "popover-enter": "popover-enter 140ms cubic-bezier(0.175, 0.885, 0.32, 1.25) both",
+        "popover-exit": "popover-exit 120ms cubic-bezier(0.2, 0, 0, 1) both",
+        "sheet-enter": "sheet-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "sheet-exit": "sheet-exit 180ms cubic-bezier(0.2, 0, 0, 1) both",
+        "reaction-pop": "reaction-pop 180ms cubic-bezier(0.175, 0.885, 0.32, 1.25) both",
+        "icon-spring": "icon-spring 140ms cubic-bezier(0.175, 0.885, 0.32, 1.25) both",
+        "banner-enter": "banner-enter 150ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "nx-shimmer": "nx-shimmer 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite",
       },
       transitionTimingFunction: {
         "spring": "cubic-bezier(0.16, 1, 0.3, 1)",

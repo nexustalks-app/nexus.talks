@@ -268,7 +268,7 @@ export function SignupForm() {
         {resendMessage && (
           <div
             role="status"
-            className="flex items-center gap-2 rounded-xl border border-emerald-600/30 bg-emerald-500/10 px-3.5 py-2.5 text-xs text-emerald-800 dark:text-emerald-300 animate-in fade-in"
+            className="flex items-center gap-2 rounded-xl border border-emerald-600/30 bg-emerald-500/10 px-3.5 py-2.5 text-xs text-emerald-800 dark:text-emerald-300 nx-fade-in"
           >
             <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
             <span className="flex-1">{resendMessage}</span>
@@ -278,7 +278,7 @@ export function SignupForm() {
         {resendError && (
           <div
             role="alert"
-            className="flex items-start gap-2 rounded-xl border border-rose/30 bg-rose/10 px-3.5 py-2.5 text-xs text-wine dark:text-[#F7B6C4] animate-in fade-in"
+            className="flex items-start gap-2 rounded-xl border border-rose/30 bg-rose/10 px-3.5 py-2.5 text-xs text-wine dark:text-[#F7B6C4] nx-fade-in"
           >
             <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
             <span className="flex-1">{resendError}</span>
@@ -344,7 +344,7 @@ export function SignupForm() {
       {error && (
         <div
           role="alert"
-          className="flex items-start gap-2.5 rounded-xl border border-rose/30 bg-rose/10 dark:bg-rose/20 px-4 py-3 text-[13px] text-wine dark:text-[#F7B6C4] backdrop-blur-sm leading-relaxed animate-in fade-in slide-in-from-top-1 duration-200"
+          className="flex items-start gap-2.5 rounded-xl border border-rose/30 bg-rose/10 dark:bg-rose/20 px-4 py-3 text-[13px] text-wine dark:text-[#F7B6C4] backdrop-blur-sm leading-relaxed nx-fade-in"
         >
           <AlertCircle className="h-4 w-4 shrink-0 text-wine dark:text-[#F7B6C4] mt-0.5" />
           <div className="flex-1">

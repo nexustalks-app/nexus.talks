@@ -103,7 +103,7 @@ export function ForgotPasswordForm() {
       {error && (
         <div
           role="alert"
-          className="flex items-start gap-2.5 rounded-xl border border-rose/30 bg-rose/10 dark:bg-rose/20 px-4 py-3 text-[13px] text-wine dark:text-[#F7B6C4] backdrop-blur-sm leading-relaxed animate-in fade-in slide-in-from-top-1 duration-200"
+          className="flex items-start gap-2.5 rounded-xl border border-rose/30 bg-rose/10 dark:bg-rose/20 px-4 py-3 text-[13px] text-wine dark:text-[#F7B6C4] backdrop-blur-sm leading-relaxed nx-fade-in"
         >
           <AlertCircle className="h-4 w-4 shrink-0 text-wine dark:text-[#F7B6C4] mt-0.5" />
           <span className="flex-1">{error}</span>
@@ -112,7 +112,7 @@ export function ForgotPasswordForm() {
 
       {/* Non-Enumerating Success Confirmation */}
       {submitted ? (
-        <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="space-y-4 nx-fade-in">
           <div
             role="status"
             className="flex items-start gap-3 rounded-xl border border-emerald-600/30 bg-emerald-500/10 px-4 py-3.5 text-[13px] text-emerald-800 dark:text-emerald-300 backdrop-blur-sm leading-relaxed"

@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MainSectionLoading() {
   return (
-    <div className="flex h-full w-full flex-col bg-porcelain dark:bg-[var(--background)] animate-in fade-in duration-150">
+    <div className="flex h-full w-full flex-col bg-porcelain dark:bg-[var(--background)] nx-fade-in">
       {/* ── Signature Glass Header Skeleton ─────────────────────────────── */}
       <div className="shrink-0 border-b border-stone/60 dark:border-white/10 bg-white/70 dark:bg-[#1C1619]/70 px-5 py-5 sm:px-10 sm:py-6 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between">

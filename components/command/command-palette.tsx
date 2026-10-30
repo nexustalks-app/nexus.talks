@@ -417,7 +417,7 @@ export function CommandPalette() {
       role="dialog"
       aria-modal="true"
       aria-label="Nexus Command Palette"
-      className="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-4 md:pt-20 bg-black/50 dark:bg-black/70 backdrop-blur-sm animate-in fade-in duration-150 select-none"
+      className="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-4 md:pt-20 bg-black/50 dark:bg-black/70 backdrop-blur-sm nx-backdrop-in select-none"
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
       }}
@@ -428,7 +428,7 @@ export function CommandPalette() {
           'relative flex flex-col w-full max-w-2xl max-h-[85vh] sm:max-h-[75vh]',
           'rounded-3xl border border-stone/80 dark:border-[#4A3843]/80',
           'liquid-glass-card shadow-2xl overflow-hidden transition-all',
-          'animate-in zoom-in-95 duration-150'
+          'nx-dialog-enter'
         )}
       >
         {/* ── Search Input Header ──────────────────────────────────────────── */}

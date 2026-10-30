@@ -91,14 +91,14 @@ export function EchoNoteModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="echo-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs nx-backdrop-in"
       onClick={(e) => {
         if (e.target === e.currentTarget && !isSaving && !isDeleting) {
           onClose();
         }
       }}
     >
-      <div className="w-full max-w-lg rounded-3xl border border-stone/80 dark:border-[#4A3843] liquid-glass-card p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 duration-150">
+      <div className="w-full max-w-lg rounded-3xl border border-stone/80 dark:border-[#4A3843] liquid-glass-card p-5 sm:p-6 shadow-2xl nx-dialog-enter">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 pb-3 border-b border-stone-subtle dark:border-[#382C34]/60">
           <div className="flex items-center gap-2.5">
@@ -147,7 +147,7 @@ export function EchoNoteModal({
 
         {/* Error Alert Banner */}
         {displayError && (
-          <div className="mt-3 flex items-start gap-2 rounded-xl border border-red-200/80 bg-red-50/80 p-3 text-xs text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300 animate-in fade-in">
+          <div className="mt-3 flex items-start gap-2 rounded-xl border border-red-200/80 bg-red-50/80 p-3 text-xs text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300 nx-fade-in">
             <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-red-600 dark:text-red-400" />
             <span>{displayError}</span>
           </div>

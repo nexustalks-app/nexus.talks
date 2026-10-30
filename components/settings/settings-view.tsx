@@ -218,9 +218,9 @@ export function SettingsView({ user, profile }: SettingsViewProps) {
           role="dialog"
           aria-modal="true"
           aria-labelledby="reset-dialog-title"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4 backdrop-blur-sm animate-backdrop-fade"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4 backdrop-blur-sm nx-backdrop-in"
         >
-          <div className="w-full max-w-sm rounded-2xl border border-stone bg-white p-6 shadow-xl animate-dialog-enter">
+          <div className="w-full max-w-sm rounded-2xl border border-stone bg-white p-6 shadow-xl nx-dialog-enter">
             <h2 id="reset-dialog-title" className="text-base font-bold text-charcoal">
               Reset All Preferences?
             </h2>
