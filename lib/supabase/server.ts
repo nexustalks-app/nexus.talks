@@ -3,6 +3,7 @@ import { cookies, headers } from 'next/headers';
 import { cache } from 'react';
 import type { CookieOptions } from '@supabase/ssr';
 import type { User } from '@supabase/supabase-js';
+import type { Profile } from '@/types/database';
 
 export const INTERNAL_VERIFIED_USER_ID_HEADER = 'x-nexus-verified-user-id';
 export const INTERNAL_VERIFIED_USER_EMAIL_HEADER = 'x-nexus-verified-user-email';
@@ -95,4 +96,23 @@ export const getAuthenticatedUser = cache(async (): Promise<{
   }
 
   return { supabase, user };
+});
+
+/**
+ * Request-scoped cached helper to fetch the profile of an authenticated user.
+ * Wrapped in React cache() so calls across layouts, pages, and components
+ * within a single server render cycle execute at most once against Supabase PostgREST.
+ */
+export const getUserProfile = cache(async (userId: string): Promise<Profile | null> => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+  return data as Profile;
 });

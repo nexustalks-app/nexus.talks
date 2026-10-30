@@ -18,6 +18,8 @@ import { createClient } from '@/lib/supabase/client';
 import { UserAvatar } from '@/components/user/user-avatar';
 import { AvatarPickerModal } from '@/components/user/avatar-picker-modal';
 import { isCreatorIdentity } from '@/components/user/nexus-avatar-3d';
+import { clearConversationListCache } from '@/components/conversation/conversation-list';
+import { clearProfileCache } from '@/components/profile/use-profile';
 import { cn } from '@/lib/utils/cn';
 
 interface AccountSectionProps {
@@ -116,6 +118,7 @@ export function AccountSection({ user, profile }: AccountSectionProps) {
           setProfileError(error.message);
         }
       } else {
+        clearProfileCache();
         setProfileSuccess(true);
         router.refresh();
         setTimeout(() => setProfileSuccess(false), 3000);
@@ -162,6 +165,8 @@ export function AccountSection({ user, profile }: AccountSectionProps) {
   };
 
   const handleSignOut = async () => {
+    clearConversationListCache();
+    clearProfileCache();
     const supabase = createClient();
     await supabase
       .from('profiles')

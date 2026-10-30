@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
-import { getAuthenticatedUser } from '@/lib/supabase/server';
+import { getAuthenticatedUser, getUserProfile } from '@/lib/supabase/server';
 import { Sidebar } from '@/components/layout/sidebar';
+import type { Profile } from '@/types/database';
 
 export default async function MainLayout({
   children,
@@ -13,13 +14,8 @@ export default async function MainLayout({
     redirect('/login');
   }
 
-  const { data: existingProfile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .maybeSingle();
+  let profile = await getUserProfile(user.id);
 
-  let profile = existingProfile;
   if (!profile) {
     const defaultUsername = user.user_metadata?.username || `user_${user.id.slice(0, 8)}`;
     const defaultDisplayName = user.user_metadata?.display_name || user.email?.split('@')[0] || 'User';
@@ -35,7 +31,7 @@ export default async function MainLayout({
       .select('*')
       .maybeSingle();
     if (createdProfile) {
-      profile = createdProfile;
+      profile = createdProfile as Profile;
     }
   }
 

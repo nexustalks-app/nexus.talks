@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
+import { getAuthenticatedUser } from '@/lib/supabase/server';
 import { ConversationView } from '@/components/conversation/conversation-view';
 import type { MessageWithReactions } from '@/components/conversation/message-item';
 
@@ -9,15 +9,9 @@ export default async function ConversationPage({
   params: Promise<{ conversationId: string }>;
 }) {
   const { conversationId } = await params;
-  const supabase = await createClient();
+  const { supabase, user } = await getAuthenticatedUser();
 
-  // 1. Get current user
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) return notFound();
+  if (!user) return notFound();
 
   // 2. Fetch conversation, members with joined profiles, and messages simultaneously in PARALLEL
   const [conversationResult, membersResult, messagesResult] = await Promise.all([

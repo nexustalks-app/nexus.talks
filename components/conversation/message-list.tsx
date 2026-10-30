@@ -57,6 +57,9 @@ function dayLabel(isoDate: string): string {
   });
 }
 
+// In-memory cache for echoes bookmark map across conversation switches
+let memoryEchoesCache: { userId: string; echoes: Map<string, { id: string; note: string | null }> } | null = null;
+
 export function MessageList({
   conversationId,
   currentUserId,
@@ -89,7 +92,12 @@ export function MessageList({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [echoesMap, setEchoesMap] = useState<Map<string, { id: string; note: string | null }>>(new Map());
+  const [echoesMap, setEchoesMap] = useState<Map<string, { id: string; note: string | null }>>(() => {
+    if (memoryEchoesCache && memoryEchoesCache.userId === currentUserId) {
+      return memoryEchoesCache.echoes;
+    }
+    return new Map();
+  });
   const [echoModalMessage, setEchoModalMessage] = useState<MessageWithReactions | null>(null);
   const [isSavingEcho, setIsSavingEcho] = useState(false);
   const [activeActionMessageId, setActiveActionMessageId] = useState<string | null>(null);
@@ -134,6 +142,10 @@ export function MessageList({
   useEffect(() => {
     let isMounted = true;
     async function loadEchoes() {
+      // If already cached for this user, avoid duplicate network roundtrips
+      if (memoryEchoesCache && memoryEchoesCache.userId === currentUserId) {
+        return;
+      }
       try {
         const res = await fetch('/api/echoes');
         if (res.ok) {
@@ -143,6 +155,7 @@ export function MessageList({
             for (const e of data.echoes) {
               map.set(e.messageId, { id: e.id, note: e.note });
             }
+            memoryEchoesCache = { userId: currentUserId, echoes: map };
             setEchoesMap(map);
           }
         }
@@ -154,7 +167,7 @@ export function MessageList({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [currentUserId]);
 
   const handleSaveEcho = useCallback(
     async (note: string) => {
@@ -174,6 +187,7 @@ export function MessageList({
               id: data.echo?.id || 'temp-' + Date.now(),
               note: data.echo?.note || note,
             });
+            if (memoryEchoesCache) memoryEchoesCache.echoes = next;
             return next;
           });
           setEchoModalMessage(null);
@@ -201,6 +215,7 @@ export function MessageList({
         setEchoesMap((prev) => {
           const next = new Map(prev);
           next.delete(echoModalMessage.id);
+          if (memoryEchoesCache) memoryEchoesCache.echoes = next;
           return next;
         });
         setEchoModalMessage(null);

@@ -105,6 +105,33 @@ function sortByPinnedAndRecent(list: ConversationItemData[]): ConversationItemDa
 
 /* ─── main component ──────────────────────────────────────────────────────── */
 
+// In-memory persistent cache to prevent list flickering and skeleton flashes
+// when navigating between app sections (e.g. Conversations → Settings → Conversations)
+let memoryConversationsCache: { userId: string; items: ConversationItemData[] } | null = null;
+
+// Tracks whether remote Supabase schema supports is_pinned / pinned_at columns (migration 016)
+let dbPinsSupported: boolean | null = null;
+
+export function clearConversationListCache() {
+  memoryConversationsCache = null;
+}
+
+// Automatic cache invalidation on Supabase Auth events (signout, account switch)
+if (typeof window !== 'undefined') {
+  try {
+    const sb = createClient();
+    sb.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        clearConversationListCache();
+      } else if (session?.user && memoryConversationsCache && memoryConversationsCache.userId !== session.user.id) {
+        clearConversationListCache();
+      }
+    });
+  } catch {
+    // ignore in environments where client cannot initialize
+  }
+}
+
 export function ConversationList({ currentUserId }: ConversationListProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -114,13 +141,36 @@ export function ConversationList({ currentUserId }: ConversationListProps) {
   if (!supabaseRef.current) supabaseRef.current = createClient();
   const supabase = supabaseRef.current;
 
-  const [conversations, setConversations] = useState<ConversationItemData[]>([]);
-  const conversationsRef = useRef<ConversationItemData[]>([]);
+  const [conversations, setConversations] = useState<ConversationItemData[]>(() => {
+    if (memoryConversationsCache && memoryConversationsCache.userId === currentUserId) {
+      return memoryConversationsCache.items;
+    }
+    return [];
+  });
+  const conversationsRef = useRef<ConversationItemData[]>(conversations);
   useEffect(() => {
     conversationsRef.current = conversations;
-  }, [conversations]);
+    if (conversations.length > 0) {
+      memoryConversationsCache = { userId: currentUserId, items: conversations };
+    }
+  }, [conversations, currentUserId]);
 
-  const [loading, setLoading] = useState(true);
+  // Account switch safety: if currentUserId changes while mounted, invalidate cache immediately
+  useEffect(() => {
+    if (memoryConversationsCache && memoryConversationsCache.userId !== currentUserId) {
+      memoryConversationsCache = null;
+      setConversations([]);
+      setLoading(true);
+    }
+  }, [currentUserId]);
+
+  const [loading, setLoading] = useState(() => {
+    return !(
+      memoryConversationsCache &&
+      memoryConversationsCache.userId === currentUserId &&
+      memoryConversationsCache.items.length > 0
+    );
+  });
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [filterTab, setFilterTab] = useState<'all' | 'unread'>('all');
@@ -172,22 +222,31 @@ export function ConversationList({ currentUserId }: ConversationListProps) {
 
         const pinnedByConvId = new Map<string, { is_pinned: boolean; pinned_at: string | null }>();
 
-        // 1. Try querying conversation_members with is_pinned & pinned_at
-        const { data: memberDataWithPins, error: pinErr } = await supabase
-          .from('conversation_members')
-          .select('conversation_id, unread_count, is_pinned, pinned_at')
-          .eq('user_id', currentUserId);
+        // 1. Query conversation_members (using schema-aware pin detection)
+        if (dbPinsSupported !== false) {
+          const { data: memberDataWithPins, error: pinErr } = await supabase
+            .from('conversation_members')
+            .select('conversation_id, unread_count, is_pinned, pinned_at')
+            .eq('user_id', currentUserId);
 
-        if (!pinErr && memberDataWithPins) {
-          memberships = memberDataWithPins;
-          memberDataWithPins.forEach((m) => {
-            pinnedByConvId.set(m.conversation_id, {
-              is_pinned: Boolean(m.is_pinned),
-              pinned_at: m.pinned_at || null,
+          if (!pinErr && memberDataWithPins) {
+            dbPinsSupported = true;
+            memberships = memberDataWithPins;
+            memberDataWithPins.forEach((m) => {
+              pinnedByConvId.set(m.conversation_id, {
+                is_pinned: Boolean(m.is_pinned),
+                pinned_at: m.pinned_at || null,
+              });
             });
-          });
-        } else {
-          // If migration 016 has not yet been applied, fall back to basic select + local storage
+          } else {
+            // Migration 016 is unapplied on remote database.
+            // Remember this so subsequent loads do not waste an extra roundtrip!
+            dbPinsSupported = false;
+          }
+        }
+
+        if (dbPinsSupported === false) {
+          // Fall back to basic select + local storage
           const { data: basicMembers, error: basicErr } = await supabase
             .from('conversation_members')
             .select('conversation_id, unread_count')
@@ -214,29 +273,39 @@ export function ConversationList({ currentUserId }: ConversationListProps) {
           memberships.map((m) => [m.conversation_id, m.unread_count ?? 0])
         );
 
-        const { data: convos, error: convErr } = await supabase
-          .from('conversations')
-          .select('id, type, name, avatar_url, last_message_at')
-          .in('id', conversationIds)
-          .order('last_message_at', { ascending: false, nullsFirst: false });
+        // Batch fetch convos, other members with profiles, and latest messages simultaneously in PARALLEL
+        const [convosResult, otherMembersResult, latestMessagesResult] = await Promise.all([
+          supabase
+            .from('conversations')
+            .select('id, type, name, avatar_url, last_message_at')
+            .in('id', conversationIds)
+            .order('last_message_at', { ascending: false, nullsFirst: false }),
+          supabase
+            .from('conversation_members')
+            .select(`
+              conversation_id,
+              user_id,
+              profiles (
+                display_name,
+                username,
+                avatar_url,
+                status
+              )
+            `)
+            .in('conversation_id', conversationIds)
+            .neq('user_id', currentUserId),
+          supabase
+            .from('messages')
+            .select('conversation_id, content, created_at, sender_id')
+            .in('conversation_id', conversationIds)
+            .is('deleted_at', null)
+            .order('created_at', { ascending: false }),
+        ]);
 
-        if (convErr) throw convErr;
-
-        // Batch fetch other members with their joined profiles in ONE single query
-        const { data: otherMembers } = await supabase
-          .from('conversation_members')
-          .select(`
-            conversation_id,
-            user_id,
-            profiles (
-              display_name,
-              username,
-              avatar_url,
-              status
-            )
-          `)
-          .in('conversation_id', conversationIds)
-          .neq('user_id', currentUserId);
+        if (convosResult.error) throw convosResult.error;
+        const convos = convosResult.data;
+        const otherMembers = otherMembersResult.data;
+        const latestMessages = latestMessagesResult.data;
 
         const profileByConvId = new Map<string, {
           userId?: string;
@@ -260,14 +329,6 @@ export function ConversationList({ currentUserId }: ConversationListProps) {
             });
           }
         });
-
-        // Batch fetch latest message for each conversation in ONE single query
-        const { data: latestMessages } = await supabase
-          .from('messages')
-          .select('conversation_id, content, created_at, sender_id')
-          .in('conversation_id', conversationIds)
-          .is('deleted_at', null)
-          .order('created_at', { ascending: false });
 
         const lastMsgByConvId = new Map<string, { content: string | null; at: string | null; isOwn: boolean }>();
         (latestMessages ?? []).forEach((msg) => {

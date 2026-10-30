@@ -68,13 +68,10 @@ export function ConversationNavigationProvider({
     }
   }, [activeId, navigatingId]);
 
-  // If the React transition finishes and navigation completed or failed, clear navigatingId
+  // When the React transition finishes, clear navigatingId immediately
   useEffect(() => {
     if (!isPending && navigatingId) {
-      const timer = setTimeout(() => {
-        setNavigatingId(null);
-      }, 400);
-      return () => clearTimeout(timer);
+      setNavigatingId(null);
     }
   }, [isPending, navigatingId]);
 

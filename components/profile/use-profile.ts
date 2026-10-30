@@ -76,13 +76,39 @@ export function useProfile({
   return { profile: matches ? fetched : null, loading, error };
 }
 
+// Module-level user-scoped cache for the authenticated user's profile to eliminate navigation latency
+let cachedCurrentProfile: { userId: string; profile: Profile } | null = null;
+
+export function clearProfileCache() {
+  cachedCurrentProfile = null;
+}
+
+// Automatic cache invalidation on Supabase Auth events (signout, account switch)
+if (typeof window !== 'undefined') {
+  try {
+    const sb = createClient();
+    sb.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        clearProfileCache();
+      } else if (session?.user && cachedCurrentProfile && cachedCurrentProfile.userId !== session.user.id) {
+        clearProfileCache();
+      }
+    });
+  } catch {
+    // ignore in environments where client cannot initialize
+  }
+}
+
 /**
  * Loads the profile of the currently authenticated user
- * (auth.getUser() -> profiles row with the same id).
+ * (auth.getSession() / auth.getUser() -> profiles row with the same id).
+ * Cached in memory per user so subsequent visits to /profile render instantly with 0ms delay.
  */
 export function useCurrentProfile(): ProfileState {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<Profile | null>(() => {
+    return cachedCurrentProfile ? cachedCurrentProfile.profile : null;
+  });
+  const [loading, setLoading] = useState(cachedCurrentProfile === null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -91,16 +117,34 @@ export function useCurrentProfile(): ProfileState {
     (async () => {
       try {
         const supabase = createClient();
-        const {
-          data: { user },
-          error: authError,
-        } = await supabase.auth.getUser();
+        
+        // Fast-path: Check local browser session cache first (0ms)
+        const { data: { session } } = await supabase.auth.getSession();
+        let user = session?.user;
+
+        // Fallback: If not in local session cache, contact Supabase Auth
+        if (!user) {
+          const {
+            data: { user: fetchedUser },
+            error: authError,
+          } = await supabase.auth.getUser();
+
+          if (cancelled) return;
+
+          if (authError || !fetchedUser) {
+            setError('Please sign in to view your profile.');
+            return;
+          }
+          user = fetchedUser;
+        }
 
         if (cancelled) return;
 
-        if (authError || !user) {
-          setError('Please sign in to view your profile.');
-          return;
+        // Account switch safety: if cached profile belongs to a different user, clear it
+        if (cachedCurrentProfile && cachedCurrentProfile.userId !== user.id) {
+          cachedCurrentProfile = null;
+          setProfile(null);
+          setLoading(true);
         }
 
         const { data, error: fetchError } = await supabase
@@ -112,14 +156,21 @@ export function useCurrentProfile(): ProfileState {
         if (cancelled) return;
 
         if (fetchError) {
-          setError(fetchError.message);
+          if (!cachedCurrentProfile) {
+            setError(fetchError.message);
+          }
         } else if (!data) {
-          setError('Profile not found');
+          if (!cachedCurrentProfile) {
+            setError('Profile not found');
+          }
         } else {
-          setProfile(data as Profile);
+          cachedCurrentProfile = { userId: user.id, profile: data as Profile };
+          setProfile(cachedCurrentProfile.profile);
         }
       } catch {
-        if (!cancelled) setError('Failed to load profile');
+        if (!cancelled && !cachedCurrentProfile) {
+          setError('Failed to load profile');
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }

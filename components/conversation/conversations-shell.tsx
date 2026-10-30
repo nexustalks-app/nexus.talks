@@ -79,7 +79,7 @@ function ConversationsShellInner({
           inChat ? 'flex' : 'hidden md:flex',
         )}
       >
-        {navigatingId !== null && navigatingId !== segment ? (
+        {navigatingId !== null && segment === null ? (
           <ConversationLoading />
         ) : (
           children

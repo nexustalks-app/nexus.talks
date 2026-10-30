@@ -25,6 +25,8 @@ import { UserAvatar } from '@/components/user/user-avatar';
 import { isCreatorIdentity } from '@/components/user/nexus-avatar-3d';
 import { useSettings } from '@/lib/settings/settings-context';
 import { useCommand } from '@/lib/command/command-context';
+import { clearConversationListCache } from '@/components/conversation/conversation-list';
+import { clearProfileCache } from '@/components/profile/use-profile';
 import { CreateActionSheet } from './create-action-sheet';
 
 interface SidebarProps {
@@ -60,6 +62,8 @@ export function Sidebar({ user, profile }: SidebarProps) {
   }, [user?.id, setCurrentUserId]);
 
   const handleLogout = async () => {
+    clearConversationListCache();
+    clearProfileCache();
     const supabase = createClient();
     await supabase
       .from('profiles')

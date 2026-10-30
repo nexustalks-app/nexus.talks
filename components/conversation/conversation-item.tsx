@@ -120,6 +120,7 @@ export function ConversationItem({
   }, [id, is_pinned, onTogglePin]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    router.prefetch(`/conversations/${id}`);
     const touch = e.touches[0];
     touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
     isSwipingRef.current = false;
