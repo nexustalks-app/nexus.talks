@@ -14,4 +14,6 @@
     <string name="error_title">Connection Interrupted</string>
     <string name="error_message">Unable to reach the Nexus.talks server. If the service is waking up, please allow a moment and try again.</string>
     <string name="error_retry">Retry Connection</string>
+    <string name="splash_subtitle">Private Communication Sanctuary</string>
+    <string name="press_back_again_to_exit">Press back again to exit</string>
 </resources>

@@ -43,8 +43,9 @@ object UpdateChecker {
     )
 
     fun checkForUpdates(activity: Activity, serverBaseUrl: String?) {
+        Log.i(TAG, "[UPDATE_CHECK] checkForUpdates invoked - isEnabled: $isEnabled, serverBaseUrl: ${serverBaseUrl?.let { try { java.net.URI(it).host } catch(e: Exception) { null } }}")
         if (!isEnabled || serverBaseUrl.isNullOrBlank()) {
-            Log.d(TAG, "Update check skipped: updates disabled or server URL is not configured.")
+            Log.d(TAG, "[UPDATE_CHECK] Update check skipped: updates disabled or server URL is not configured.")
             return
         }
 

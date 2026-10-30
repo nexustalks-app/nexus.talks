@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import {
   ArrowRight,
   ShieldCheck,
@@ -27,6 +29,13 @@ export default async function HomePage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  // If accessed from inside the native Android app container, fast-track directly to messenger or login
+  const headerList = await headers();
+  const userAgent = headerList.get('user-agent') || '';
+  if (userAgent.includes('NexusTalksApp')) {
+    redirect(user ? '/conversations' : '/login');
+  }
 
   return (
     <div className="relative min-h-[100dvh] bg-porcelain text-charcoal flex flex-col justify-between selection:bg-wine/15 selection:text-wine overflow-x-hidden">

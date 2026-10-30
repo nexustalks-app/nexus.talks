@@ -54,6 +54,25 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith(path)
   );
 
+  // Fast check: inspect auth cookie presence
+  const cookiesList = request.cookies.getAll();
+  const hasAuthToken = cookiesList.some(
+    (c) => c.name.startsWith('sb-') && c.name.includes('-auth-token')
+  );
+
+  // Check if request originates from the native Android app container
+  const userAgent = request.headers.get('user-agent') || '';
+  const isNativeApp = userAgent.includes('NexusTalksApp');
+
+  // Native Android App: Never show the public marketing landing page '/'
+  if (isNativeApp && pathname === '/') {
+    const redirectTarget = hasAuthToken ? '/conversations' : '/login';
+    const redirectResponse = NextResponse.redirect(new URL(redirectTarget, request.url));
+    redirectResponse.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    redirectResponse.headers.set('Pragma', 'no-cache');
+    return redirectResponse;
+  }
+
   // If path is neither protected nor auth-exclusive, pass through immediately
   if (!isProtectedPath && !isAuthPath) {
     return NextResponse.next({
@@ -62,12 +81,6 @@ export async function middleware(request: NextRequest) {
       },
     });
   }
-
-  // Fast check: inspect auth cookie presence
-  const cookiesList = request.cookies.getAll();
-  const hasAuthToken = cookiesList.some(
-    (c) => c.name.startsWith('sb-') && c.name.includes('-auth-token')
-  );
 
   // If visiting a protected path with zero auth cookies, redirect to login immediately
   if (isProtectedPath && !hasAuthToken) {

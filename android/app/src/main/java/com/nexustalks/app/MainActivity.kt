@@ -7,14 +7,20 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
+import android.net.http.SslError
 import android.os.Bundle
+import android.os.Message
 import android.util.Log
 import android.view.View
+import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
+import android.webkit.RenderProcessGoneDetail
+import android.webkit.SslErrorHandler
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -27,6 +33,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -38,11 +47,24 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "NexusMainActivity"
         private const val PREFS_NAME = "nexus_talks_prefs"
         private const val KEY_SERVER_URL = "configured_server_url"
+
+        /**
+         * Privacy-safe URL sanitizer: extracts and formats only scheme, host, and path.
+         * Never logs query strings, tokens, credentials, fragments, or session data.
+         */
+        fun sanitizeUrlForLog(uri: Uri?): String {
+            if (uri == null) return "<null>"
+            val scheme = uri.scheme ?: ""
+            val host = uri.host ?: ""
+            val path = uri.path ?: ""
+            return "$scheme://$host$path"
+        }
     }
 
     private lateinit var prefs: SharedPreferences
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
+    private lateinit var splashLoadingContainer: View
     private lateinit var setupContainer: ScrollView
     private lateinit var editServerUrl: TextInputEditText
     private lateinit var urlInputLayout: TextInputLayout
@@ -55,17 +77,46 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnRetry: MaterialButton
 
     private var activeServerUrl: String? = null
+    private var isInitialPageLoaded = false
+    private var lastBackPressTime = 0L
     private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
     private lateinit var fileChooserLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.i(TAG, "[LIFECYCLE] onCreate - savedInstanceState: ${savedInstanceState != null}")
+
+        // Diagnostic uncaught exception handler
+        val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            Log.e(TAG, "[FATAL_CRASH] Uncaught exception on thread '${thread.name}'", throwable)
+            defaultHandler?.uncaughtException(thread, throwable)
+        }
+
         super.onCreate(savedInstanceState)
+
+        // Native Edge-to-Edge System Bar Integration
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        insetsController.isAppearanceLightStatusBars = true
+        insetsController.isAppearanceLightNavigationBars = true
+
         setContentView(R.layout.activity_main)
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rootContainer)) { view, insets ->
+            val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+
+            val bottomInset = if (imeInsets.bottom > 0) imeInsets.bottom else navBarInsets.bottom
+            view.setPadding(statusBarInsets.left, statusBarInsets.top, statusBarInsets.right, bottomInset)
+            insets
+        }
 
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
         webView = findViewById(R.id.webView)
         progressBar = findViewById(R.id.progressBar)
+        splashLoadingContainer = findViewById(R.id.splashLoadingContainer)
         setupContainer = findViewById(R.id.setupContainer)
         editServerUrl = findViewById(R.id.editServerUrl)
         urlInputLayout = findViewById(R.id.urlInputLayout)
@@ -79,6 +130,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState != null) {
             activeServerUrl = savedInstanceState.getString(KEY_SERVER_URL)
+            Log.i(TAG, "[LIFECYCLE] Restored activeServerUrl from savedInstanceState: ${sanitizeUrlForLog(activeServerUrl?.let { Uri.parse(it) })}")
         }
 
         registerFileChooser()
@@ -87,14 +139,42 @@ class MainActivity : AppCompatActivity() {
         setupActions()
 
         if (savedInstanceState != null) {
+            Log.i(TAG, "[LIFECYCLE] Restoring WebView state from savedInstanceState")
             webView.restoreState(savedInstanceState)
         } else {
             resolveAndLaunchUrl()
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.i(TAG, "[LIFECYCLE] onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i(TAG, "[LIFECYCLE] onResume - webView.url: ${sanitizeUrlForLog(webView.url?.let { Uri.parse(it) })}")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.i(TAG, "[LIFECYCLE] onPause")
+        CookieManager.getInstance().flush()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i(TAG, "[LIFECYCLE] onStop")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i(TAG, "[LIFECYCLE] onDestroy")
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        Log.i(TAG, "[LIFECYCLE] onSaveInstanceState - saving activeServerUrl: ${sanitizeUrlForLog(activeServerUrl?.let { Uri.parse(it) })}")
         outState.putString(KEY_SERVER_URL, activeServerUrl)
         webView.saveState(outState)
     }
@@ -124,6 +204,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupBackNavigation() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                Log.i(TAG, "[BACK_NAV] Back pressed - canGoBack: ${webView.canGoBack()}, errorVisible: ${errorContainer.visibility == View.VISIBLE}")
                 if (errorContainer.visibility == View.VISIBLE) {
                     hideErrorScreen()
                     if (webView.canGoBack()) {
@@ -131,14 +212,49 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         webView.reload()
                     }
-                } else if (webView.visibility == View.VISIBLE && webView.canGoBack()) {
-                    webView.goBack()
-                } else if (setupContainer.visibility == View.VISIBLE) {
+                    return
+                }
+
+                if (setupContainer.visibility == View.VISIBLE) {
                     finish()
-                } else {
+                    return
+                }
+
+                if (webView.visibility == View.VISIBLE) {
+                    val currentUrl = webView.url
+                    val currentPath = currentUrl?.let { try { Uri.parse(it).path } catch (e: Exception) { null } } ?: ""
+
+                    // Root messenger destinations: confirm exit instead of cycling backwards into auth redirects
+                    val isRootDestination = currentPath == "/conversations" ||
+                            currentPath == "/login" ||
+                            currentPath.isEmpty() ||
+                            currentPath == "/"
+
+                    if (isRootDestination) {
+                        if (System.currentTimeMillis() - lastBackPressTime < 2000L) {
+                            finish()
+                        } else {
+                            lastBackPressTime = System.currentTimeMillis()
+                            Toast.makeText(this@MainActivity, getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT).show()
+                        }
+                        return
+                    }
+
+                    // If in a sub-route (e.g. inside a specific conversation /conversations/123, /settings, /people, /profile), navigate back
+                    if (webView.canGoBack()) {
+                        webView.goBack()
+                        return
+                    }
+                }
+
+                // Fallback exit confirmation
+                if (System.currentTimeMillis() - lastBackPressTime < 2000L) {
                     isEnabled = false
                     onBackPressedDispatcher.onBackPressed()
                     isEnabled = true
+                } else {
+                    lastBackPressTime = System.currentTimeMillis()
+                    Toast.makeText(this@MainActivity, getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -159,6 +275,18 @@ class MainActivity : AppCompatActivity() {
         settings.allowFileAccess = false
         settings.allowContentAccess = false
 
+        // Native app chrome elimination: disable scrollbars & over-scroll glow
+        webView.isVerticalScrollBarEnabled = false
+        webView.isHorizontalScrollBarEnabled = false
+        webView.overScrollMode = View.OVER_SCROLL_NEVER
+
+        // Set Porcelain background to prevent white flashes
+        webView.setBackgroundColor(getColor(R.color.nexus_porcelain))
+
+        // Set custom User-Agent identifying the native container
+        val defaultUa = settings.userAgentString
+        settings.userAgentString = "$defaultUa NexusTalksApp/${BuildConfig.VERSION_NAME} (Android; NativeContainer)"
+
         // Enable cookie synchronization across sessions
         val cookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)
@@ -166,28 +294,66 @@ class MainActivity : AppCompatActivity() {
 
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                val uri = request?.url ?: return false
-                return handleUrlNavigation(uri, isForMainFrame = request.isForMainFrame)
+                val uri = request?.url
+                val isForMainFrame = request?.isForMainFrame ?: false
+                val isRedirect = request?.isRedirect ?: false
+                val hasGesture = request?.hasGesture() ?: false
+                val method = request?.method ?: "UNKNOWN"
+                val sanitized = sanitizeUrlForLog(uri)
+
+                Log.i(
+                    TAG,
+                    "[NAV_REQUEST] shouldOverrideUrlLoading(request) - url: $sanitized, mainFrame: $isForMainFrame, redirect: $isRedirect, gesture: $hasGesture, method: $method"
+                )
+
+                if (uri == null) {
+                    Log.i(TAG, "[NAV_DECISION] uri is null -> staying in WebView (return false)")
+                    return false
+                }
+                val decision = handleUrlNavigation(uri, isForMainFrame = isForMainFrame)
+                Log.i(TAG, "[NAV_DECISION] url: $sanitized -> decision: ${if (decision) "OVERRIDE_EXTERNAL" else "STAY_IN_WEBVIEW"}")
+                return decision
             }
 
             @Suppress("DEPRECATION")
             @Deprecated("Deprecated in Java")
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                if (url.isNullOrBlank()) return false
-                val uri = Uri.parse(url)
-                return handleUrlNavigation(uri, isForMainFrame = true)
+                val uri = url?.let { Uri.parse(it) }
+                val sanitized = sanitizeUrlForLog(uri)
+                Log.i(TAG, "[NAV_REQUEST_LEGACY] shouldOverrideUrlLoading(String) - url: $sanitized")
+                if (url.isNullOrBlank() || uri == null) return false
+                val decision = handleUrlNavigation(uri, isForMainFrame = true)
+                Log.i(TAG, "[NAV_DECISION_LEGACY] url: $sanitized -> decision: ${if (decision) "OVERRIDE_EXTERNAL" else "STAY_IN_WEBVIEW"}")
+                return decision
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                val sanitized = sanitizeUrlForLog(url?.let { Uri.parse(it) })
+                Log.i(TAG, "[PAGE_LIFECYCLE] onPageStarted - url: $sanitized")
                 super.onPageStarted(view, url, favicon)
                 progressBar.visibility = View.VISIBLE
                 hideErrorScreen()
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
+                val sanitized = sanitizeUrlForLog(url?.let { Uri.parse(it) })
+                Log.i(TAG, "[PAGE_LIFECYCLE] onPageFinished - url: $sanitized, activeServerUrl: ${sanitizeUrlForLog(activeServerUrl?.let { Uri.parse(it) })}")
                 super.onPageFinished(view, url)
                 progressBar.visibility = View.GONE
                 CookieManager.getInstance().flush()
+
+                if (!isInitialPageLoaded) {
+                    isInitialPageLoaded = true
+                    webView.visibility = View.VISIBLE
+                    splashLoadingContainer.animate()
+                        .alpha(0f)
+                        .setDuration(250)
+                        .withEndAction {
+                            splashLoadingContainer.visibility = View.GONE
+                            splashLoadingContainer.alpha = 1f
+                        }
+                        .start()
+                }
             }
 
             override fun onReceivedError(
@@ -196,13 +362,17 @@ class MainActivity : AppCompatActivity() {
                 error: WebResourceError?
             ) {
                 super.onReceivedError(view, request, error)
-                // Only show recoverable error screen for main frame failures
-                if (request?.isForMainFrame == true) {
-                    val errorCode = error?.errorCode ?: 0
-                    val description = error?.description?.toString() ?: "Connection error"
-                    Log.w(TAG, "WebView main frame error: $errorCode - $description for ${request.url}")
+                val sanitized = sanitizeUrlForLog(request?.url)
+                val errorCode = error?.errorCode ?: 0
+                val description = error?.description?.toString() ?: "Connection error"
+                val isForMainFrame = request?.isForMainFrame ?: false
 
-                    // Check for network connectivity or server unreachable issues
+                Log.w(
+                    TAG,
+                    "[WEBVIEW_ERROR] onReceivedError - url: $sanitized, mainFrame: $isForMainFrame, errorCode: $errorCode, desc: $description"
+                )
+
+                if (isForMainFrame) {
                     when (errorCode) {
                         ERROR_CONNECT,
                         ERROR_HOST_LOOKUP,
@@ -213,10 +383,45 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            override fun onReceivedHttpError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                errorResponse: WebResourceResponse?
+            ) {
+                super.onReceivedHttpError(view, request, errorResponse)
+                val sanitized = sanitizeUrlForLog(request?.url)
+                val statusCode = errorResponse?.statusCode ?: 0
+                Log.w(
+                    TAG,
+                    "[WEBVIEW_HTTP_ERROR] onReceivedHttpError - url: $sanitized, mainFrame: ${request?.isForMainFrame}, statusCode: $statusCode"
+                )
+            }
+
+            override fun onReceivedSslError(
+                view: WebView?,
+                handler: SslErrorHandler?,
+                error: SslError?
+            ) {
+                val sanitized = sanitizeUrlForLog(error?.url?.let { Uri.parse(it) })
+                val primary = error?.primaryError ?: -1
+                Log.e(TAG, "[WEBVIEW_SSL_ERROR] onReceivedSslError - url: $sanitized, primaryError: $primary")
+                super.onReceivedSslError(view, handler, error)
+            }
+
+            override fun onRenderProcessGone(view: WebView?, detail: RenderProcessGoneDetail?): Boolean {
+                val crashed = detail?.didCrash() ?: false
+                val priority = detail?.rendererPriorityAtExit() ?: 0
+                Log.e(TAG, "[RENDERER_CRASH] onRenderProcessGone - didCrash: $crashed, priorityAtExit: $priority")
+                return super.onRenderProcessGone(view, detail)
+            }
         }
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                if (newProgress == 25 || newProgress == 50 || newProgress == 75 || newProgress == 100) {
+                    Log.d(TAG, "[PROGRESS] Loading progress: $newProgress%")
+                }
                 if (newProgress < 100) {
                     progressBar.visibility = View.VISIBLE
                     progressBar.progress = newProgress
@@ -225,11 +430,32 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                if (consoleMessage != null) {
+                    val msg = consoleMessage.message()
+                    val source = consoleMessage.sourceId()
+                    val line = consoleMessage.lineNumber()
+                    Log.d("NexusWebConsole", "[$source:$line] $msg")
+                }
+                return super.onConsoleMessage(consoleMessage)
+            }
+
+            override fun onCreateWindow(
+                view: WebView?,
+                isDialog: Boolean,
+                isUserGesture: Boolean,
+                resultMsg: Message?
+            ): Boolean {
+                Log.i(TAG, "[WEBCHROME] onCreateWindow requested - isDialog: $isDialog, isUserGesture: $isUserGesture")
+                return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg)
+            }
+
             override fun onShowFileChooser(
                 webView: WebView?,
                 filePathCallback: ValueCallback<Array<Uri>>?,
                 fileChooserParams: FileChooserParams?
             ): Boolean {
+                Log.i(TAG, "[FILE_CHOOSER] onShowFileChooser invoked")
                 fileUploadCallback?.onReceiveValue(null)
                 fileUploadCallback = filePathCallback
 
@@ -260,11 +486,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleUrlNavigation(uri: Uri, isForMainFrame: Boolean): Boolean {
-        val scheme = uri.scheme?.lowercase() ?: return false
+        val scheme = uri.scheme?.lowercase()
         val host = uri.host?.lowercase()
+        val sanitized = sanitizeUrlForLog(uri)
+
+        Log.d(TAG, "[ROUTING_CHECK] Evaluating url: $sanitized, scheme: $scheme, host: $host, isForMainFrame: $isForMainFrame")
 
         // 1. Telephone, email, and SMS application links
         if (scheme == "tel" || scheme == "mailto" || scheme == "sms") {
+            Log.i(TAG, "[INTENT_TRIGGER] Special protocol ($scheme) -> dispatching ACTION_VIEW for $sanitized")
             return try {
                 val intent = Intent(Intent.ACTION_VIEW, uri).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -272,27 +502,37 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 true
             } catch (e: Exception) {
-                Log.e(TAG, "Failed to launch intent for $uri", e)
+                Log.e(TAG, "Failed to launch intent for $sanitized", e)
                 false
             }
         }
 
         // 2. Internal browser schemes (about:blank, data:, blob:) must stay in WebView
         if (scheme != "http" && scheme != "https") {
+            Log.d(TAG, "[ROUTING_CHECK] Non-HTTP(S) internal scheme ($scheme) -> staying in WebView")
             return false
         }
 
         // 3. Subframe / iframe requests must never launch external browser
         if (!isForMainFrame) {
+            Log.d(TAG, "[ROUTING_CHECK] Not for main frame -> staying in WebView")
             return false
         }
 
         // 4. In-messenger navigation (same host, subdomain, Render domain, or Supabase Auth)
-        if (isInternalHost(host)) {
+        val isInternal = isInternalHost(host)
+        Log.d(TAG, "[ROUTING_CHECK] Host '$host' isInternalHost: $isInternal")
+        if (isInternal) {
+            Log.i(TAG, "[ROUTING_CHECK] Internal host -> staying in WebView")
             return false
         }
 
         // 5. Genuine external links (e.g. GitHub APK downloads, external documentation)
+        Log.w(
+            TAG,
+            "[INTENT_TRIGGER] EXTERNAL BROWSER INTENT FIRED! Reason: host '$host' is not internal. URL: $sanitized. Call stack:\n" +
+                    Log.getStackTraceString(Throwable())
+        )
         return try {
             val intent = Intent(Intent.ACTION_VIEW, uri).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -300,7 +540,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             true
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to launch external browser for $uri", e)
+            Log.e(TAG, "Failed to launch external browser for $sanitized", e)
             false
         }
     }
@@ -347,7 +587,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showErrorScreen(details: String) {
-        Log.w(TAG, "Showing recoverable connection screen: $details")
+        Log.w(TAG, "[ERROR_SCREEN] Showing recoverable connection screen: $details")
+        splashLoadingContainer.visibility = View.GONE
         textErrorMessage.text = getString(R.string.error_message)
         errorContainer.visibility = View.VISIBLE
     }
@@ -359,6 +600,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupActions() {
         btnConnect.setOnClickListener {
             val raw = editServerUrl.text?.toString()?.trim() ?: ""
+            Log.i(TAG, "[SETUP_ACTION] btnConnect clicked")
             val validated = validateAndNormalizeUrl(raw)
             if (validated != null) {
                 saveAndLaunchUrl(validated)
@@ -370,24 +612,48 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnRetry.setOnClickListener {
+            Log.i(TAG, "[ERROR_RETRY] btnRetry clicked - webView.url: ${sanitizeUrlForLog(webView.url?.let { Uri.parse(it) })}")
             hideErrorScreen()
+            if (!isInitialPageLoaded) {
+                splashLoadingContainer.visibility = View.VISIBLE
+                splashLoadingContainer.alpha = 1f
+            }
             if (webView.url != null) {
                 webView.reload()
             } else if (activeServerUrl != null) {
-                webView.loadUrl(activeServerUrl!!)
+                webView.loadUrl(getAppLaunchUrl(activeServerUrl!!))
             } else {
                 resolveAndLaunchUrl()
             }
         }
     }
 
+    /**
+     * Resolves the proper messaging application entry point.
+     * Directs native app users to '/conversations' (or '/login' via auth middleware)
+     * instead of loading the public marketing landing page '/'.
+     */
+    private fun getAppLaunchUrl(baseUrl: String): String {
+        val trimmed = baseUrl.trimEnd('/')
+        val uri = try { Uri.parse(trimmed) } catch (e: Exception) { null }
+        val path = uri?.path ?: ""
+        return if (path.isEmpty() || path == "/") {
+            "$trimmed/conversations"
+        } else {
+            trimmed
+        }
+    }
+
     private fun resolveAndLaunchUrl() {
+        Log.i(TAG, "[URL_RESOLVE] Starting URL resolution process")
         // 1. Check stored URL in SharedPreferences
         val stored = prefs.getString(KEY_SERVER_URL, null)?.trim()
         if (!stored.isNullOrEmpty()) {
             val validated = validateAndNormalizeUrl(stored)
             if (validated != null) {
-                launchWebView(validated)
+                val targetUrl = getAppLaunchUrl(validated)
+                Log.i(TAG, "[URL_RESOLVE] Target resolved from SharedPreferences: ${sanitizeUrlForLog(Uri.parse(targetUrl))}")
+                launchWebView(targetUrl)
                 return
             }
         }
@@ -397,12 +663,15 @@ class MainActivity : AppCompatActivity() {
         if (compileTimeDefault.isNotEmpty()) {
             val validated = validateAndNormalizeUrl(compileTimeDefault)
             if (validated != null) {
-                launchWebView(validated)
+                val targetUrl = getAppLaunchUrl(validated)
+                Log.i(TAG, "[URL_RESOLVE] Target resolved from BuildConfig.DEFAULT_SERVER_URL: ${sanitizeUrlForLog(Uri.parse(targetUrl))}")
+                launchWebView(targetUrl)
                 return
             }
         }
 
         // 3. No URL configured — display branded setup screen
+        Log.i(TAG, "[URL_RESOLVE] No configured URL available -> showing native setup screen")
         showSetupScreen()
     }
 
@@ -455,6 +724,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSetupScreen() {
+        Log.i(TAG, "[VIEW_SWITCH] Displaying setupContainer screen")
+        splashLoadingContainer.visibility = View.GONE
         webView.visibility = View.GONE
         hideErrorScreen()
         setupContainer.visibility = View.VISIBLE
@@ -465,15 +736,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveAndLaunchUrl(url: String) {
+        val targetUrl = getAppLaunchUrl(url)
+        Log.i(TAG, "[CONFIG_SAVE] Saving base URL: ${sanitizeUrlForLog(Uri.parse(url))} and launching: ${sanitizeUrlForLog(Uri.parse(targetUrl))}")
         prefs.edit().putString(KEY_SERVER_URL, url).apply()
-        launchWebView(url)
+        launchWebView(targetUrl)
     }
 
     private fun launchWebView(url: String) {
+        val sanitized = sanitizeUrlForLog(Uri.parse(url))
+        Log.i(TAG, "[WEBVIEW_DISPATCH] launchWebView called with $sanitized")
         activeServerUrl = url
         setupContainer.visibility = View.GONE
         hideErrorScreen()
-        webView.visibility = View.VISIBLE
+        if (isInitialPageLoaded) {
+            webView.visibility = View.VISIBLE
+        } else {
+            splashLoadingContainer.visibility = View.VISIBLE
+            splashLoadingContainer.alpha = 1f
+        }
 
         webView.loadUrl(url)
 
@@ -484,7 +764,7 @@ class MainActivity : AppCompatActivity() {
     private fun showServerSwitchDialog() {
         AlertDialog.Builder(this)
             .setTitle(R.string.change_server)
-            .setMessage("Current: ${activeServerUrl ?: "Not connected"}")
+            .setMessage("Current: ${sanitizeUrlForLog(activeServerUrl?.let { Uri.parse(it) })}")
             .setPositiveButton("Change URL") { _, _ ->
                 showSetupScreen()
             }
@@ -497,10 +777,5 @@ class MainActivity : AppCompatActivity() {
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        CookieManager.getInstance().flush()
     }
 }
