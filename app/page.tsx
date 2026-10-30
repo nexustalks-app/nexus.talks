@@ -128,23 +128,23 @@ export default async function HomePage() {
             </p>
 
             {/* ── Primary Action Area: Install App & See a Demo ──────────── */}
-            <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto animate-fade-up delay-300">
+            <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto animate-fade-up delay-300">
               {/* Primary Action: Download APK and PWA Install */}
               <HeroInstallCta />
 
               {/* Secondary Action: See a Demo */}
               <Link
                 href="/demo"
-                className="inline-flex h-12 sm:h-13 items-center justify-center gap-2 rounded-2xl border border-stone-strong/70 dark:border-[#4B3944] bg-white/80 dark:bg-[#251D22]/80 px-6 text-[14.5px] font-medium text-charcoal dark:text-foreground shadow-2xs transition-[background-color,border-color,color,transform] duration-150 ease-out hover:bg-stone/30 hover:border-wine/50 hover:text-wine hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wine focus-visible:ring-offset-2 shrink-0"
+                className="inline-flex h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-2xl border border-stone-strong/70 dark:border-[#4B3944] bg-white/90 dark:bg-[#251D22]/90 px-4.5 sm:px-5 text-[13.5px] sm:text-[14px] font-medium text-charcoal dark:text-foreground shadow-2xs transition-all duration-150 ease-out hover:bg-stone/30 hover:border-wine/50 hover:text-wine hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wine focus-visible:ring-offset-2 whitespace-nowrap shrink-0"
                 aria-label="See an interactive demo of Nexus.talks"
               >
-                <Play className="h-4 w-4 text-wine dark:text-[#E2A6B3] fill-wine dark:fill-[#E2A6B3]" />
-                <span>See a Demo</span>
+                <Play className="h-4 w-4 text-wine dark:text-[#E2A6B3] fill-wine dark:fill-[#E2A6B3] shrink-0" />
+                <span className="whitespace-nowrap leading-none">See a Demo</span>
               </Link>
             </div>
 
             {/* Verified Release Metadata & Security Notice */}
-            <div className="mt-3.5 flex flex-wrap items-center gap-2 text-[11.5px] text-muted dark:text-muted-foreground animate-fade-up delay-350">
+            <div className="mt-5 sm:mt-6 flex flex-wrap items-center gap-2 text-[11.5px] text-muted dark:text-muted-foreground animate-fade-up delay-350">
               <span className="inline-flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-600/10 px-2.5 py-0.5 rounded-full">
                 <CheckCircle2 className="h-3 w-3" />
                 <span>Verified Release v1.0.1</span>
@@ -345,10 +345,10 @@ export default async function HomePage() {
                 <a
                   href="https://github.com/nexustalks-app/nexus.talks/releases/download/v1.0.1/nexus-talks-v1.0.1.apk"
                   download="nexus-talks-v1.0.1.apk"
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98] px-5 border-t border-white/20"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98] px-5 border-t border-white/20 whitespace-nowrap shrink-0"
                   aria-label="Download Android App APK (v1.0.1, 5.0 MB)"
                 >
-                  <Download className="h-4 w-4" />
+                  <Download className="h-4 w-4 shrink-0" />
                   <span>Download APK (v1.0.1 · 5.0 MB)</span>
                 </a>
                 <Link
@@ -399,7 +399,7 @@ export default async function HomePage() {
               </div>
 
               <div className="mt-6 pt-5 border-t border-stone-subtle dark:border-[#33252E] flex flex-col sm:flex-row gap-2.5">
-                <HeroInstallCta className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98] border-t border-white/20" />
+                <HeroInstallCta variant="pwa-only" className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-wine hover:bg-wine-hover text-white text-xs font-semibold shadow-sm transition-all active:scale-[0.98] border-t border-white/20 whitespace-nowrap" />
                 {user ? (
                   <Link
                     href="/conversations"
