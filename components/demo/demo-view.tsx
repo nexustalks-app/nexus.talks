@@ -727,6 +727,36 @@ export function DemoView() {
   const [inputMessage, setInputMessage] = useState('');
   const [isTypingSimulated, setIsTypingSimulated] = useState(false);
   const [simulatedFeedback, setSimulatedFeedback] = useState<string | null>(null);
+  const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const simulatedReplyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const animatedDemoIdsRef = useRef<Set<string>>(new Set());
+
+  const triggerSimulatedFeedback = useCallback((text: string, duration = 3000) => {
+    if (feedbackTimerRef.current) {
+      clearTimeout(feedbackTimerRef.current);
+    }
+    setSimulatedFeedback(text);
+    feedbackTimerRef.current = setTimeout(() => {
+      setSimulatedFeedback(null);
+      feedbackTimerRef.current = null;
+    }, duration);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+      if (simulatedReplyTimerRef.current) clearTimeout(simulatedReplyTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (simulatedReplyTimerRef.current) {
+      clearTimeout(simulatedReplyTimerRef.current);
+      simulatedReplyTimerRef.current = null;
+      setIsTypingSimulated(false);
+    }
+  }, [selectedContactId]);
+
   const [replyingTo, setReplyingTo] = useState<{ id: string; senderName: string; content: string } | null>(null);
   const [editingMsg, setEditingMsg] = useState<{ id: string; content: string } | null>(null);
   const [deletingMsgId, setDeletingMsgId] = useState<string | null>(null);
@@ -771,8 +801,14 @@ export function DemoView() {
   const inputRef = useRef<HTMLInputElement>(null);
   const draftBackupRef = useRef<string>('');
 
-  const activeContact = contacts.find((c) => c.id === selectedContactId) || contacts[0];
-  const activeGroup = groups.find((g) => g.id === selectedGroupId) || groups[0];
+  const activeContact = useMemo(
+    () => contacts.find((c) => c.id === selectedContactId) || contacts[0],
+    [contacts, selectedContactId]
+  );
+  const activeGroup = useMemo(
+    () => groups.find((g) => g.id === selectedGroupId) || groups[0],
+    [groups, selectedGroupId]
+  );
 
   const prevDemoMessagesCountRef = useRef(activeContact.conversation.length);
   const prevDemoLastMessageIdRef = useRef(
@@ -1047,9 +1083,8 @@ export function DemoView() {
       setReplyingTo(null);
     }
     setDeletingMsgId(null);
-    setSimulatedFeedback('Message deleted locally · Zero network requests');
-    setTimeout(() => setSimulatedFeedback(null), 3000);
-  }, [selectedContactId, editingMsg, replyingTo, handleCancelEdit]);
+    triggerSimulatedFeedback('Message deleted locally · Zero network requests');
+  }, [selectedContactId, editingMsg, replyingTo, handleCancelEdit, triggerSimulatedFeedback]);
 
   const handleToggleReaction = useCallback((msgId: string, emoji: string) => {
     setContacts((prev) =>
@@ -1148,30 +1183,28 @@ export function DemoView() {
       ];
     });
 
-    setSimulatedFeedback('Saved to Demo Echoes · 100% in-memory');
-    setTimeout(() => setSimulatedFeedback(null), 3000);
+    triggerSimulatedFeedback('Saved to Demo Echoes · 100% in-memory');
     setDemoEchoModalTarget(null);
-  }, [demoEchoModalTarget, contacts, selectedContactId]);
+  }, [demoEchoModalTarget, contacts, selectedContactId, triggerSimulatedFeedback]);
 
   const handleUnsaveDemoEcho = useCallback(() => {
     if (!demoEchoModalTarget) return;
     setDemoEchoes((prev) => prev.filter((e) => e.messageId !== demoEchoModalTarget.id));
-    setSimulatedFeedback('Unsaved from Demo Echoes · 100% in-memory');
-    setTimeout(() => setSimulatedFeedback(null), 3000);
+    triggerSimulatedFeedback('Unsaved from Demo Echoes · 100% in-memory');
     setDemoEchoModalTarget(null);
-  }, [demoEchoModalTarget]);
+  }, [demoEchoModalTarget, triggerSimulatedFeedback]);
 
-  const filteredContacts = contacts.filter((c) => {
+  const filteredContacts = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    return (
+    if (!query) return contacts;
+    return contacts.filter((c) =>
       c.name.toLowerCase().includes(query) ||
       c.handle.toLowerCase().includes(query) ||
       (c.username && c.username.toLowerCase().includes(query)) ||
       (c.subtitle && c.subtitle.toLowerCase().includes(query)) ||
       (c.statusText && c.statusText.toLowerCase().includes(query))
     );
-  });
+  }, [contacts, searchQuery]);
 
   const handleSelectContact = (id: string) => {
     setSelectedContactId(id);
@@ -1289,8 +1322,7 @@ export function DemoView() {
       setInputMessage(draftBackupRef.current);
       draftBackupRef.current = '';
       setEditingMsg(null);
-      setSimulatedFeedback('Message edited locally · Zero network requests');
-      setTimeout(() => setSimulatedFeedback(null), 3000);
+      triggerSimulatedFeedback('Message edited locally · Zero network requests');
       return;
     }
 
@@ -1324,8 +1356,7 @@ export function DemoView() {
 
     setInputMessage('');
     inputRef.current?.focus();
-    setSimulatedFeedback('Message added locally · Zero network requests');
-    setTimeout(() => setSimulatedFeedback(null), 3000);
+    triggerSimulatedFeedback('Message added locally · Zero network requests');
 
     // Determine simulated reply using Aasif Deterministic Intelligence Brain
     const targetContactId = activeContact.id;
@@ -1375,7 +1406,11 @@ export function DemoView() {
 
     // Trigger simulated reply after dynamic typing delay
     setIsTypingSimulated(true);
-    setTimeout(() => {
+    if (simulatedReplyTimerRef.current) {
+      clearTimeout(simulatedReplyTimerRef.current);
+    }
+    simulatedReplyTimerRef.current = setTimeout(() => {
+      simulatedReplyTimerRef.current = null;
       setIsTypingSimulated(false);
       const simulatedReply = {
         id: `reply-${Date.now()}`,
@@ -2067,6 +2102,11 @@ export function DemoView() {
                   const ownRadius = `18px ${joinsPrev ? '6px' : '18px'} ${joinsNext ? '6px' : '18px'} 18px`;
                   const otherRadius = `${joinsPrev ? '6px' : '18px'} 18px 18px ${joinsNext ? '6px' : '18px'}`;
 
+                  const isNew = !animatedDemoIdsRef.current.has(msg.id);
+                  if (isNew) {
+                    animatedDemoIdsRef.current.add(msg.id);
+                  }
+
                   return (
                   <div
                     key={msg.id}
@@ -2103,7 +2143,8 @@ export function DemoView() {
                     onTouchCancel={handleMessageTouchCancel}
                     onContextMenu={(e) => handleMessageContextMenu(msg.id, e)}
                     className={cn(
-                      'group relative flex flex-col animate-message-enter transition-all duration-300 rounded-2xl p-1 -m-1 touch-pan-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wine/50 dark:focus-visible:ring-[#F3B3C2]/50',
+                      'group relative flex flex-col transition-all duration-300 rounded-2xl p-1 -m-1 touch-pan-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wine/50 dark:focus-visible:ring-[#F3B3C2]/50',
+                      isNew && 'animate-message-enter will-change-transform',
                       joinsPrev ? 'chat-msg-gap-join' : 'chat-msg-gap-new first:mt-0',
                       activeMobileActionMsgId === msg.id && 'z-50',
                       highlightedMsgId === msg.id && 'ring-2 ring-wine ring-offset-2 ring-offset-porcelain dark:ring-offset-[#1A1317] bg-wine/10 dark:bg-wine/20 scale-[1.01]',
@@ -2681,8 +2722,7 @@ export function DemoView() {
                         aria-label="Add attachment"
                         title="Add attachment (Coming in next release)"
                         onClick={() => {
-                          setSimulatedFeedback('File attachments scheduled for next release');
-                          setTimeout(() => setSimulatedFeedback(null), 2500);
+                          triggerSimulatedFeedback('File attachments scheduled for next release', 2500);
                         }}
                         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[var(--foreground-muted)] dark:text-[#8e8a91] hover:text-[var(--foreground)] dark:hover:text-white transition-colors"
                       >
@@ -2719,8 +2759,7 @@ export function DemoView() {
                       aria-label="Calendar"
                       title="Calendar scheduling (Coming in next release)"
                       onClick={() => {
-                        setSimulatedFeedback('Calendar scheduling scheduled for next release');
-                        setTimeout(() => setSimulatedFeedback(null), 2500);
+                        triggerSimulatedFeedback('Calendar scheduling scheduled for next release', 2500);
                       }}
                       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[16px] bg-white/80 dark:bg-white/[0.06] hover:bg-wine/10 hover:text-wine dark:hover:bg-wine/25 hover:border-wine/30 border border-black/[0.07] dark:border-white/[0.08] text-[var(--foreground-muted)] dark:text-[#8e8a91] hover:text-[var(--foreground)] dark:hover:text-white transition-all active:scale-95 shadow-xs"
                     >
@@ -3055,8 +3094,7 @@ export function DemoView() {
                           type="button"
                           onClick={() => {
                             setDemoEchoes((prev) => prev.filter((e) => e.id !== echo.id));
-                            setSimulatedFeedback('Unsaved from Demo Echoes');
-                            setTimeout(() => setSimulatedFeedback(null), 3000);
+                            triggerSimulatedFeedback('Unsaved from Demo Echoes');
                           }}
                           className="text-[11px] font-medium text-muted hover:text-red-600 transition-colors"
                         >

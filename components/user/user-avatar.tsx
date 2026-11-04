@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { cn } from '@/lib/utils/cn';
 import { NexusAvatar3D, type AvatarSize, isCreatorIdentity, AVATAR_SIZE_CLASSES } from './nexus-avatar-3d';
 
@@ -14,7 +14,7 @@ export interface UserAvatarProps {
   isPinned?: boolean;
 }
 
-export function UserAvatar({
+export const UserAvatar = memo(function UserAvatar({
   display_name,
   avatar_url,
   size = 'md',
@@ -64,4 +64,4 @@ export function UserAvatar({
       isPinned={isPinned}
     />
   );
-}
+});

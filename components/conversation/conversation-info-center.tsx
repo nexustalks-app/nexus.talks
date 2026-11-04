@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo } from 'react';
 import {
   X,
   Calendar,
@@ -199,7 +199,7 @@ function extractLinksFromMessages(messages: Message[]): SharedLinkItem[] {
   return results;
 }
 
-export function ConversationInfoCenter({
+export const ConversationInfoCenter = memo(function ConversationInfoCenter({
   isOpen,
   onClose,
   displayName,
@@ -797,4 +797,4 @@ export function ConversationInfoCenter({
       </div>
     </div>
   );
-}
+});

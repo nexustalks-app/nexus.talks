@@ -145,6 +145,14 @@ export const MessageItem = memo(function MessageItem({
   const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isLongPressActiveRef = useRef(false);
 
+  useEffect(() => {
+    return () => {
+      if (longPressTimerRef.current) {
+        clearTimeout(longPressTimerRef.current);
+      }
+    };
+  }, []);
+
   const { settings } = useSettings();
   const isSoft = settings.appearance.bubbleStyle === 'soft';
 

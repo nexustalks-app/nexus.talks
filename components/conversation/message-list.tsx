@@ -616,6 +616,12 @@ export function MessageList({
             const record = (payload.new || payload.old) as { message_id?: string };
             if (!record?.message_id) return;
 
+            // Guard: Only fetch if the reaction belongs to a message in THIS conversation
+            const existsInCurrentConversation = messagesRef.current.some(
+              (m) => m.id === record.message_id
+            );
+            if (!existsInCurrentConversation) return;
+
             // Re-fetch reactions for that specific message
             getSupabase()
               .from('message_reactions')
@@ -623,13 +629,13 @@ export function MessageList({
               .eq('message_id', record.message_id)
               .then(({ data }) => {
                 if (data) {
-                  setMessages((prev) =>
-                    prev.map((m) =>
-                      m.id === record.message_id
-                        ? { ...m, message_reactions: data }
-                        : m
-                    )
-                  );
+                  setMessages((prev) => {
+                    const idx = prev.findIndex((m) => m.id === record.message_id);
+                    if (idx === -1) return prev;
+                    const next = [...prev];
+                    next[idx] = { ...prev[idx], message_reactions: data };
+                    return next;
+                  });
                 }
               });
           }
@@ -829,11 +835,17 @@ export function MessageList({
     window.addEventListener('visibilitychange', handleVisibility);
     window.addEventListener('online', handleOnline);
 
-    // Intelligent adaptive polling fallback (5s) while conversation is actively open
-    // Guarantees delivery even if Supabase Realtime WebSocket drops or times out
+    // Intelligent adaptive polling fallback while conversation is actively open
+    // Polls gently (12s) when Realtime WebSocket is joined, more frequently (5s) if disconnected
+    let lastPollTime = Date.now();
     const interval = setInterval(() => {
-      revalidateLatest();
-    }, 5000);
+      const isChannelJoined = channelRef.current?.state === 'joined';
+      const pollThreshold = isChannelJoined ? 12000 : 5000;
+      if (Date.now() - lastPollTime >= pollThreshold) {
+        lastPollTime = Date.now();
+        revalidateLatest();
+      }
+    }, 2500);
 
     return () => {
       isCancelled = true;
@@ -1365,11 +1377,51 @@ export function MessageList({
     ? messages.filter((m) => m.content.toLowerCase().includes(cleanQuery))
     : messages;
 
+  const messageMap = useMemo(() => {
+    const map = new Map<string, MessageWithReactions>();
+    for (const m of messages) {
+      map.set(m.id, m);
+    }
+    return map;
+  }, [messages]);
+
   const displayedMessages = useMemo<MessageWithReactions[]>(() => {
-    return [...filteredMessages].sort(
-      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-    );
-  }, [filteredMessages]);
+    const sorted = [...filteredMessages].sort((a, b) => {
+      if (a.created_at === b.created_at) return 0;
+      return a.created_at < b.created_at ? -1 : 1;
+    });
+
+    return sorted.map((m) => {
+      if (m.reply_to_id && !m.reply_to) {
+        const orig = messageMap.get(m.reply_to_id);
+        if (orig) {
+          return {
+            ...m,
+            reply_to: {
+              id: orig.id,
+              content: orig.content,
+              sender_id: orig.sender_id,
+              sender_name: orig.sender_id === currentUserId ? 'You' : participantName,
+              deleted_at: orig.deleted_at,
+            },
+          };
+        }
+      }
+      return m;
+    });
+  }, [filteredMessages, messageMap, currentUserId, participantName]);
+
+  const messageDateMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const m of displayedMessages) {
+      map.set(m.id, getCalendarDateString(m.created_at));
+    }
+    return map;
+  }, [displayedMessages]);
+
+  const handleEcho = useCallback((msg: MessageWithReactions) => {
+    setEchoModalMessage(msg);
+  }, []);
 
   return (
     <div className="relative flex flex-1 min-h-0 flex-col bg-[var(--pane-chat-bg)] dark:bg-[#19171b] dark:bg-[radial-gradient(ellipse_at_50%_40%,#262329_0%,#1a181d_70%,#131215_100%)] text-[var(--foreground)] dark:text-white transition-colors duration-150">
@@ -1460,9 +1512,9 @@ export function MessageList({
               {displayedMessages.map((message, idx) => {
                 const prev = displayedMessages[idx - 1];
                 const next = displayedMessages[idx + 1];
-                const msgDateStr = getCalendarDateString(message.created_at);
-                const prevDateStr = prev ? getCalendarDateString(prev.created_at) : '';
-                const nextDateStr = next ? getCalendarDateString(next.created_at) : '';
+                const msgDateStr = messageDateMap.get(message.id) || '';
+                const prevDateStr = prev ? messageDateMap.get(prev.id) || '' : '';
+                const nextDateStr = next ? messageDateMap.get(next.id) || '' : '';
                 const showDateSep = idx === 0 || (msgDateStr !== '' && msgDateStr !== prevDateStr);
                 const nextIsSameDay = nextDateStr !== '' && nextDateStr === msgDateStr;
                 const joinsPrev = !!prev && !showDateSep && closeInTime(prev, message);
@@ -1508,9 +1560,8 @@ export function MessageList({
                         onDelete={handlePromptDelete}
                         onToggleReaction={handleToggleReaction}
                         onJumpToMessage={handleJumpToMessage}
-                        allMessages={messages}
                         isEchoed={echoesMap.has(message.id)}
-                        onEcho={(msg) => setEchoModalMessage(msg)}
+                        onEcho={handleEcho}
                         onRetry={handleRetryMessage}
                         onDismissFailed={handleDismissFailedMessage}
                         activeActionMessageId={activeActionMessageId}

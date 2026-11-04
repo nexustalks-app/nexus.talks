@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { UserAvatar } from '@/components/user/user-avatar';
 import { PresenceIndicator } from '@/components/user/presence-indicator';
 import { ProfileModal } from '@/components/profile/profile-modal';
@@ -22,7 +22,7 @@ interface ConversationHeaderProps {
   searchOpen?: boolean;
 }
 
-export function ConversationHeader({
+export const ConversationHeader = memo(function ConversationHeader({
   displayName,
   avatarUrl,
   status,
@@ -213,4 +213,4 @@ export function ConversationHeader({
     )}
   </>
 );
-}
+});

@@ -8,6 +8,7 @@ import React, {
   useCallback,
   useEffect,
   useRef,
+  useMemo,
 } from 'react';
 import { useRouter, usePathname, useSelectedLayoutSegment } from 'next/navigation';
 
@@ -140,19 +141,31 @@ export function ConversationNavigationProvider({
     setNavigationError(null);
   }, []);
 
+  const value = useMemo<ConversationNavigationContextType>(
+    () => ({
+      navigatingId,
+      activeId,
+      isNavigating: Boolean(navigatingId) || isPending,
+      navigationError,
+      openConversation,
+      retryNavigation,
+      clearNavigation,
+      clearNavigationError,
+    }),
+    [
+      navigatingId,
+      activeId,
+      isPending,
+      navigationError,
+      openConversation,
+      retryNavigation,
+      clearNavigation,
+      clearNavigationError,
+    ]
+  );
+
   return (
-    <ConversationNavigationContext.Provider
-      value={{
-        navigatingId,
-        activeId,
-        isNavigating: Boolean(navigatingId) || isPending,
-        navigationError,
-        openConversation,
-        retryNavigation,
-        clearNavigation,
-        clearNavigationError,
-      }}
-    >
+    <ConversationNavigationContext.Provider value={value}>
       {children}
     </ConversationNavigationContext.Provider>
   );

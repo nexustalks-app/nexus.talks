@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Search, X, SquarePen, Loader2, MessageSquare, Users, User, Compass, ArrowRight, Sun, Moon, Pin, PinOff } from 'lucide-react';
@@ -739,19 +739,32 @@ export function ConversationList({ currentUserId }: ConversationListProps) {
 
   /* ── filtering ────────────────────────────────────────────────────────── */
 
-  const unreadTotal = conversations.reduce((acc, c) => acc + (c.unread_count > 0 ? 1 : 0), 0);
+  const unreadTotal = useMemo(
+    () => conversations.reduce((acc, c) => acc + (c.unread_count > 0 ? 1 : 0), 0),
+    [conversations]
+  );
 
-  const filteredByTab = filterTab === 'unread'
-    ? conversations.filter((c) => c.unread_count > 0)
-    : conversations;
+  const filteredByTab = useMemo(
+    () =>
+      filterTab === 'unread'
+        ? conversations.filter((c) => c.unread_count > 0)
+        : conversations,
+    [conversations, filterTab]
+  );
 
-  const filtered = search.trim()
-    ? filteredByTab.filter(
-        (c) =>
-          c.name.toLowerCase().includes(search.toLowerCase()) ||
-          c.username.toLowerCase().includes(search.toLowerCase())
-      )
-    : filteredByTab;
+  const filtered = useMemo(() => {
+    const cleanSearch = search.trim().toLowerCase();
+    if (!cleanSearch) return filteredByTab;
+    return filteredByTab.filter(
+      (c) =>
+        c.name.toLowerCase().includes(cleanSearch) ||
+        c.username.toLowerCase().includes(cleanSearch)
+    );
+  }, [filteredByTab, search]);
+
+  const handleOpenContextMenu = useCallback((conversationId: string, x: number, y: number) => {
+    setContextMenu({ conversationId, x, y });
+  }, []);
 
   const handleNewConversation = () => {
     setStartingNew(true);
@@ -917,7 +930,7 @@ export function ConversationList({ currentUserId }: ConversationListProps) {
                   isActive={conv.id === activeId}
                   isTyping={Boolean(typingMap[conv.id])}
                   onTogglePin={handleTogglePin}
-                  onOpenContextMenu={(id, x, y) => setContextMenu({ conversationId: id, x, y })}
+                  onOpenContextMenu={handleOpenContextMenu}
                 />
               </li>
             ))}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo, memo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Loader2, Pin, PinOff } from 'lucide-react';
@@ -48,7 +48,7 @@ function formatTime(iso: string | null): string {
   return date.toLocaleDateString('en', { month: 'short', day: 'numeric' });
 }
 
-export function ConversationItem({
+export const ConversationItem = memo(function ConversationItem({
   conversation,
   isActive,
   isTyping = false,
@@ -80,7 +80,7 @@ export function ConversationItem({
   const unreadIndicator = settings.chat.unreadIndicator;
 
   const hasUnread = unread_count > 0;
-  const timeLabel = formatTime(last_message_at);
+  const timeLabel = useMemo(() => formatTime(last_message_at), [last_message_at]);
 
   const rawPreview = last_message_content
     ? !showPreviews
@@ -88,7 +88,10 @@ export function ConversationItem({
       : last_message_content
     : null;
   // Clean repeated @handle prefix for presentation without touching database content
-  const preview = rawPreview ? rawPreview.replace(/^@[\w.-]+(?:\s*:\s*|\s*·\s*|\s+)/, '') : null;
+  const preview = useMemo(
+    () => (rawPreview ? rawPreview.replace(/^@[\w.-]+(?:\s*:\s*|\s*·\s*|\s+)/, '') : null),
+    [rawPreview]
+  );
 
   // ── Swipe-to-pin & Long-press Gestures ────────────────────────────────────
   const [swipeOffset, setSwipeOffset] = useState(0);
@@ -446,4 +449,4 @@ export function ConversationItem({
       </Link>
     </div>
   );
-}
+});

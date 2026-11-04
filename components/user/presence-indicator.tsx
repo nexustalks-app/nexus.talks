@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils/cn';
-import type { CSSProperties } from 'react';
+import { memo, type CSSProperties } from 'react';
 
 interface PresenceIndicatorProps {
   status: 'online' | 'away' | 'offline';
@@ -7,7 +7,7 @@ interface PresenceIndicatorProps {
   style?: CSSProperties;
 }
 
-export function PresenceIndicator({ status, className, style }: PresenceIndicatorProps) {
+export const PresenceIndicator = memo(function PresenceIndicator({ status, className, style }: PresenceIndicatorProps) {
   const color =
     status === 'online' ? '#2E7D5B'
     : status === 'away' ? '#D97706'
@@ -21,4 +21,4 @@ export function PresenceIndicator({ status, className, style }: PresenceIndicato
       style={{ backgroundColor: color, ...style }}
     />
   );
-}
+});

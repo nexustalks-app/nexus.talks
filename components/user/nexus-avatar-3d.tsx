@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useId } from 'react';
+import React, { useId, memo } from 'react';
 import { cn } from '@/lib/utils/cn';
 import {
   type AvatarSize,
@@ -45,7 +45,7 @@ export interface NexusAvatar3DProps {
  * - Spacing: letterSpacing="1.5" (multi-letter) or "0" (single-letter)
  * - Typography: Playfair Display / Georgia (Creator), Plus Jakarta Sans (Others)
  */
-export function NexusAvatar3D({
+export const NexusAvatar3D = memo(function NexusAvatar3D({
   id,
   name,
   size = 'md',
@@ -214,4 +214,4 @@ export function NexusAvatar3D({
       )}
     </div>
   );
-}
+});

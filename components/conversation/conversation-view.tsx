@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ConversationHeader } from './conversation-header';
 import { MessageList } from './message-list';
 import { ConversationInfoCenter } from './conversation-info-center';
@@ -94,17 +94,17 @@ export function ConversationView({
     setThemePref(loadChatThemePreference(conversationId, currentUserId));
   }, [conversationId, currentUserId]);
 
-  const handleApplyTheme = (newPref: ConversationThemePreference) => {
+  const handleApplyTheme = useCallback((newPref: ConversationThemePreference) => {
     setThemePref(newPref);
     saveChatThemePreference(conversationId, newPref, currentUserId);
-  };
+  }, [conversationId, currentUserId]);
 
-  const handleResetTheme = () => {
+  const handleResetTheme = useCallback(() => {
     setThemePref(DEFAULT_THEME_PREFERENCE);
     removeChatThemePreference(conversationId, currentUserId);
-  };
+  }, [conversationId, currentUserId]);
 
-  const handleToggleDetails = () => {
+  const handleToggleDetails = useCallback(() => {
     if (typeof window !== 'undefined' && window.matchMedia('(min-width: 1280px)').matches) {
       setDetailsOpen((prev) => {
         const next = !prev;
@@ -118,23 +118,37 @@ export function ConversationView({
     } else {
       setMobileDetailsOpen((prev) => !prev);
     }
-  };
+  }, []);
 
-  const handleToggleMute = async () => {
-    const nextMuted = !isMuted;
-    setIsMuted(nextMuted);
-    try {
+  const handleToggleSearch = useCallback(() => {
+    setSearchOpen((prev) => !prev);
+  }, []);
+
+  const handleCloseSearch = useCallback(() => {
+    setSearchOpen(false);
+  }, []);
+
+  const handleCloseMobileDetails = useCallback(() => {
+    setMobileDetailsOpen(false);
+  }, []);
+
+  const handleToggleMute = useCallback(async () => {
+    setIsMuted((prevMuted) => {
+      const nextMuted = !prevMuted;
       const supabase = createClient();
-      await supabase
+      supabase
         .from('conversation_members')
         .update({ is_muted: nextMuted })
         .eq('conversation_id', conversationId)
-        .eq('user_id', currentUserId);
-    } catch {
-      // Rollback on error
-      setIsMuted(!nextMuted);
-    }
-  };
+        .eq('user_id', currentUserId)
+        .then(({ error }) => {
+          if (error) {
+            setIsMuted(prevMuted);
+          }
+        });
+      return nextMuted;
+    });
+  }, [conversationId, currentUserId]);
 
   const chatThemeStyles = getChatThemeStyles(themePref, isDarkTheme);
 
@@ -153,7 +167,7 @@ export function ConversationView({
           userId={participant.id}
           onToggleDetails={handleToggleDetails}
           detailsOpen={detailsOpen || mobileDetailsOpen}
-          onToggleSearch={() => setSearchOpen((prev) => !prev)}
+          onToggleSearch={handleToggleSearch}
           searchOpen={searchOpen}
         />
         <MessageList
@@ -167,7 +181,7 @@ export function ConversationView({
           conversationType={conversation?.type || 'direct'}
           onMessagesChange={setMessages}
           searchOpen={searchOpen}
-          onCloseSearch={() => setSearchOpen(false)}
+          onCloseSearch={handleCloseSearch}
         />
       </div>
 
@@ -190,7 +204,7 @@ export function ConversationView({
             conversationCreatedAt={conversation?.createdAt}
             isMuted={isMuted}
             onToggleMute={handleToggleMute}
-            onToggleSearch={() => setSearchOpen((prev) => !prev)}
+            onToggleSearch={handleToggleSearch}
             searchOpen={searchOpen}
             messages={messages}
             themePreference={themePref}
@@ -206,7 +220,7 @@ export function ConversationView({
         <div className="xl:hidden">
           <ConversationInfoCenter
             isOpen={true}
-            onClose={() => setMobileDetailsOpen(false)}
+            onClose={handleCloseMobileDetails}
             displayName={participant.displayName}
             username={participant.username}
             avatarUrl={participant.avatarUrl}
@@ -220,7 +234,7 @@ export function ConversationView({
             conversationCreatedAt={conversation?.createdAt}
             isMuted={isMuted}
             onToggleMute={handleToggleMute}
-            onToggleSearch={() => setSearchOpen((prev) => !prev)}
+            onToggleSearch={handleToggleSearch}
             searchOpen={searchOpen}
             messages={messages}
             themePreference={themePref}
