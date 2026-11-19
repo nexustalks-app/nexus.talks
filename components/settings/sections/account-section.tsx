@@ -20,6 +20,8 @@ import { AvatarPickerModal } from '@/components/user/avatar-picker-modal';
 import { isCreatorIdentity } from '@/components/user/nexus-avatar-3d';
 import { clearConversationListCache } from '@/components/conversation/conversation-list';
 import { clearProfileCache } from '@/components/profile/use-profile';
+import { clearUserDrafts } from '@/lib/offline/draft-store';
+import { clearUserOfflineQueue } from '@/lib/offline/offline-store';
 import { cn } from '@/lib/utils/cn';
 
 interface AccountSectionProps {
@@ -167,6 +169,8 @@ export function AccountSection({ user, profile }: AccountSectionProps) {
   const handleSignOut = async () => {
     clearConversationListCache();
     clearProfileCache();
+    clearUserDrafts(user.id);
+    clearUserOfflineQueue(user.id);
     const supabase = createClient();
     await supabase
       .from('profiles')

@@ -4,6 +4,8 @@ import "./globals.css";
 import { SettingsProvider } from "@/lib/settings/settings-context";
 import { CommandProvider } from "@/lib/command/command-context";
 import { CommandPalette } from "@/components/command/command-palette";
+import { NetworkStatusProvider } from "@/lib/network/network-status";
+import { NetworkStatusBar } from "@/components/ui/network-status-bar";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -128,12 +130,15 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-porcelain text-charcoal font-sans antialiased">
-        <SettingsProvider>
-          <CommandProvider>
-            {children}
-            <CommandPalette />
-          </CommandProvider>
-        </SettingsProvider>
+        <NetworkStatusProvider>
+          <SettingsProvider>
+            <CommandProvider>
+              <NetworkStatusBar />
+              {children}
+              <CommandPalette />
+            </CommandProvider>
+          </SettingsProvider>
+        </NetworkStatusProvider>
       </body>
     </html>
   );

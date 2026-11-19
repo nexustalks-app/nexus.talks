@@ -55,3 +55,8 @@ next-env.d.ts
 Thumbs.db
 .idea/
 .vscode/
+
+# cloudflare & opennext
+.open-next
+.wrangler
+.dev.vars*

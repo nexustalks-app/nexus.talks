@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ConversationHeader } from './conversation-header';
 import { MessageList } from './message-list';
+import { ConversationErrorBoundary } from './conversation-error-boundary';
 import { ConversationInfoCenter } from './conversation-info-center';
 import { createClient } from '@/lib/supabase/client';
 import {
@@ -170,19 +171,23 @@ export function ConversationView({
           onToggleSearch={handleToggleSearch}
           searchOpen={searchOpen}
         />
-        <MessageList
+        <ConversationErrorBoundary
           key={conversationId}
-          conversationId={conversationId}
-          currentUserId={currentUserId}
-          initialMessages={initialMessages}
-          participantName={participant.displayName}
-          participantAvatar={participant.avatarUrl}
-          participantUsername={participant.username}
-          conversationType={conversation?.type || 'direct'}
-          onMessagesChange={setMessages}
-          searchOpen={searchOpen}
-          onCloseSearch={handleCloseSearch}
-        />
+          fallbackTitle={`Conversation with ${participant.displayName} temporarily interrupted`}
+        >
+          <MessageList
+            conversationId={conversationId}
+            currentUserId={currentUserId}
+            initialMessages={initialMessages}
+            participantName={participant.displayName}
+            participantAvatar={participant.avatarUrl}
+            participantUsername={participant.username}
+            conversationType={conversation?.type || 'direct'}
+            onMessagesChange={setMessages}
+            searchOpen={searchOpen}
+            onCloseSearch={handleCloseSearch}
+          />
+        </ConversationErrorBoundary>
       </div>
 
       {/* ── Right Details Panel: Only rendered on desktop (xl+ / ≥1280px) ───── */}

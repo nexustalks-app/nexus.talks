@@ -14,6 +14,13 @@ import { Search, X, ArrowDown } from 'lucide-react';
 import type { MessageReaction } from '@/types/database';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { subscribeToTyping } from '@/lib/realtime/typing-channel';
+import {
+  getQueuedMessages,
+  enqueueOfflineMessage,
+  updateOfflineMessage,
+  removeOfflineMessage,
+} from '@/lib/offline/offline-store';
+import { useNetworkStatus } from '@/lib/network/network-status';
 
 interface MessageListProps {
   conversationId: string;
@@ -257,6 +264,7 @@ export function MessageList({
   const { settings } = useSettings();
   const settingsRef = useRef(settings);
   const currentUserIdRef = useRef(currentUserId);
+  const { checkConnection } = useNetworkStatus();
 
   useEffect(() => {
     settingsRef.current = settings;
@@ -265,6 +273,66 @@ export function MessageList({
   useEffect(() => {
     currentUserIdRef.current = currentUserId;
   }, [currentUserId]);
+
+  const isMountedRef = useRef(true);
+  const activeConversationIdRef = useRef(conversationId);
+
+  useEffect(() => {
+    activeConversationIdRef.current = conversationId;
+  }, [conversationId]);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const isDrainingRef = useRef<boolean>(false);
+  const backoffCountRef = useRef<number>(0);
+  const backoffTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── Restore Persisted Offline Queue from IndexedDB ───────────────────────
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function restorePersistedQueue() {
+      try {
+        const queued = await getQueuedMessages(currentUserId, conversationId);
+        if (isCancelled || queued.length === 0) return;
+
+        const restoredMsgs: MessageWithReactions[] = queued.map((q) => ({
+          id: q.id,
+          conversation_id: q.conversationId,
+          sender_id: q.userId,
+          content: q.content,
+          type: 'text',
+          status: q.status || 'sending',
+          failedError: q.failedError,
+          reply_to_id: q.replyToId,
+          reply_to: q.replyTo || null,
+          edited_at: null,
+          deleted_at: null,
+          created_at: q.createdAt,
+          message_reactions: [],
+        }));
+
+        setMessages((prev) => {
+          const existingIds = new Set(prev.map((m) => m.id));
+          const toAdd = restoredMsgs.filter((m) => !existingIds.has(m.id));
+          if (toAdd.length === 0) return prev;
+          return [...prev, ...toAdd];
+        });
+      } catch {
+        // Safe fallback
+      }
+    }
+
+    restorePersistedQueue();
+    return () => {
+      isCancelled = true;
+    };
+  }, [conversationId, currentUserId]);
 
   const supabaseRef = useRef<ReturnType<typeof createClient> | null>(null);
   function getSupabase() {
@@ -916,7 +984,7 @@ export function MessageList({
       const trimmed = newContent.trim();
       if (!trimmed) return;
 
-      const previousMessage = messages.find((m) => m.id === messageId);
+      const previousMessage = messagesRef.current.find((m) => m.id === messageId);
       if (!previousMessage || previousMessage.content === trimmed) {
         setEditingMessage(null);
         return;
@@ -970,12 +1038,15 @@ export function MessageList({
         }
 
         const data = await res.json();
+        if (!isMountedRef.current || activeConversationIdRef.current !== conversationId) return;
+
         if (data.message) {
           setMessages((prev) =>
             prev.map((m) => (m.id === messageId ? { ...m, ...data.message } : m))
           );
         }
       } catch (err: unknown) {
+        if (!isMountedRef.current || activeConversationIdRef.current !== conversationId) return;
         // Rollback on failure
         const errorMsg = err instanceof Error ? err.message : 'Failed to save edit';
         setError(errorMsg);
@@ -999,7 +1070,7 @@ export function MessageList({
         setEditingMessage({ id: messageId, content: trimmed });
       }
     },
-    [messages, currentUserId]
+    [conversationId, currentUserId]
   );
 
   // ── Delete Handlers ────────────────────────────────────────────────────────
@@ -1154,6 +1225,7 @@ export function MessageList({
         }
 
         const data = await res.json();
+        if (!isMountedRef.current || activeConversationIdRef.current !== conversationId) return;
         if (data.reactions) {
           setMessages((prev) =>
             prev.map((m) =>
@@ -1162,6 +1234,7 @@ export function MessageList({
           );
         }
       } catch {
+        if (!isMountedRef.current || activeConversationIdRef.current !== conversationId) return;
         // Rollback optimistic update on server error
         setMessages((prev) =>
           prev.map((m) =>
@@ -1172,139 +1245,21 @@ export function MessageList({
         setTimeout(() => setError(null), 3000);
       }
     },
-    [currentUserId]
+    [conversationId, currentUserId]
   );
 
-  // ── Send message handler ──────────────────────────────────────────────────
-  const handleSend = async (content: string, replyToId?: string | null) => {
-    const tempId = `temp_${Date.now()}`;
-    const originalMsg = replyToId ? messages.find((m) => m.id === replyToId) : null;
-
-    const optimisticMsg: MessageWithReactions = {
-      id: tempId,
-      conversation_id: conversationId,
-      sender_id: currentUserId,
-      content,
-      type: 'text',
-      status: 'sending',
-      reply_to_id: replyToId || null,
-      edited_at: null,
-      deleted_at: null,
-      created_at: new Date().toISOString(),
-      reply_to: originalMsg
-        ? {
-            id: originalMsg.id,
-            content: originalMsg.content,
-            sender_id: originalMsg.sender_id,
-            sender_name: originalMsg.sender_id === currentUserId ? 'You' : participantName,
-          }
-        : null,
-      message_reactions: [],
-    };
-
-    // Optimistically add to message state immediately
-    setMessages((prev) => [...prev, optimisticMsg]);
-    setReplyingTo(null);
-
-    try {
-      const { data, error: insertError } = await getSupabase()
-        .from('messages')
-        .insert({
-          conversation_id: conversationId,
-          sender_id: currentUserId,
-          content,
-          type: 'text',
-          reply_to_id: replyToId || null,
-        })
-        .select(`
-          id,
-          conversation_id,
-          sender_id,
-          content,
-          type,
-          reply_to_id,
-          created_at,
-          edited_at,
-          deleted_at,
-          reply_to:reply_to_id (
-            id,
-            content,
-            sender_id,
-            deleted_at
-          )
-        `)
-        .single();
-
-      if (insertError) {
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === tempId ? { ...m, status: 'failed', failedError: insertError.message } : m
-          )
-        );
-        setError(insertError.message);
-        return;
-      }
-
-      if (data) {
-        const resolvedReplyTo = Array.isArray(data.reply_to)
-          ? data.reply_to[0]
-          : data.reply_to;
-        const serverMsg: MessageWithReactions = {
-          ...(data as unknown as MessageWithReactions),
-          status: 'sent',
-          reply_to: resolvedReplyTo || null,
-          message_reactions: [],
-        };
-
-        setMessages((prev) => {
-          const tempIndex = prev.findIndex((m) => m.id === tempId);
-          if (tempIndex !== -1) {
-            const next = [...prev];
-            next[tempIndex] = serverMsg;
-            return next;
-          }
-          if (prev.some((m) => m.id === data.id)) return prev;
-          return [...prev, serverMsg];
-        });
-
-        // Broadcast to other active clients instantly (<30ms)
-        if (channelRef.current) {
-          channelRef.current.send({
-            type: 'broadcast',
-            event: 'new_message',
-            payload: serverMsg,
-          });
-        }
-      }
-    } catch {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === tempId ? { ...m, status: 'failed', failedError: 'Network connection issue' } : m
-        )
-      );
-      setError('Failed to send message. Please tap retry.');
-    }
-  };
-
-  // ── Retry failed message handler ──────────────────────────────────────────
-  const handleRetryMessage = useCallback(
-    async (failedMsg: MessageWithReactions) => {
-      const tempId = failedMsg.id;
-
-      // Mark as sending again
-      setMessages((prev) =>
-        prev.map((m) => (m.id === tempId ? { ...m, status: 'sending', failedError: undefined } : m))
-      );
-
+  // ── Execute Send (Persist to Supabase + Broadcast + IndexedDB Clean) ────
+  const executeSend = useCallback(
+    async (tempId: string, content: string, replyToId: string | null): Promise<boolean> => {
       try {
         const { data, error: insertError } = await getSupabase()
           .from('messages')
           .insert({
-            conversation_id: failedMsg.conversation_id,
+            conversation_id: conversationId,
             sender_id: currentUserId,
-            content: failedMsg.content,
-            type: failedMsg.type || 'text',
-            reply_to_id: failedMsg.reply_to_id || null,
+            content,
+            type: 'text',
+            reply_to_id: replyToId || null,
           })
           .select(`
             id,
@@ -1325,18 +1280,26 @@ export function MessageList({
           `)
           .single();
 
+        if (!isMountedRef.current || activeConversationIdRef.current !== conversationId) return false;
+
         if (insertError) {
           setMessages((prev) =>
             prev.map((m) =>
               m.id === tempId ? { ...m, status: 'failed', failedError: insertError.message } : m
             )
           );
+          await updateOfflineMessage(tempId, {
+            status: 'failed',
+            failedError: insertError.message,
+          });
           setError(insertError.message);
-          return;
+          return false;
         }
 
         if (data) {
-          const resolvedReplyTo = Array.isArray(data.reply_to) ? data.reply_to[0] : data.reply_to;
+          const resolvedReplyTo = Array.isArray(data.reply_to)
+            ? data.reply_to[0]
+            : data.reply_to;
           const serverMsg: MessageWithReactions = {
             ...(data as unknown as MessageWithReactions),
             status: 'sent',
@@ -1344,10 +1307,21 @@ export function MessageList({
             message_reactions: [],
           };
 
-          setMessages((prev) =>
-            prev.map((m) => (m.id === tempId ? serverMsg : m))
-          );
+          setMessages((prev) => {
+            const tempIndex = prev.findIndex((m) => m.id === tempId);
+            if (tempIndex !== -1) {
+              const next = [...prev];
+              next[tempIndex] = serverMsg;
+              return next;
+            }
+            if (prev.some((m) => m.id === data.id)) return prev;
+            return [...prev, serverMsg];
+          });
 
+          // Durable IndexedDB cleanup: message is acknowledged by PostgreSQL
+          await removeOfflineMessage(tempId);
+
+          // Broadcast to other active clients instantly (<30ms)
           if (channelRef.current) {
             channelRef.current.send({
               type: 'broadcast',
@@ -1355,21 +1329,177 @@ export function MessageList({
               payload: serverMsg,
             });
           }
+          return true;
         }
+        return false;
       } catch {
+        if (!isMountedRef.current || activeConversationIdRef.current !== conversationId) return false;
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === tempId ? { ...m, status: 'failed', failedError: 'Network error. Please try again.' } : m
+            m.id === tempId ? { ...m, status: 'failed', failedError: 'Network connection issue' } : m
           )
         );
-        setError('Failed to send message. Please try again.');
+        await updateOfflineMessage(tempId, {
+          status: 'failed',
+          failedError: 'Network connection issue',
+        });
+        setError('Failed to send message. Please tap retry.');
+        return false;
       }
     },
-    [currentUserId]
+    [conversationId, currentUserId]
   );
 
-  const handleDismissFailedMessage = useCallback((tempId: string) => {
+  // ── Drain Persistent Offline Message Queue (Strict FIFO & Backoff) ─────────
+  const drainOfflineQueue = useCallback(async () => {
+    if (isDrainingRef.current) return;
+    if (typeof navigator !== 'undefined' && !navigator.onLine) return;
+
+    // Retrieve pending offline messages for this conversation from durable storage
+    const queued = await getQueuedMessages(currentUserId, conversationId);
+    if (queued.length === 0) {
+      backoffCountRef.current = 0;
+      return;
+    }
+
+    // Pre-flight connectivity verification (guards against captive portals and dead gateways)
+    const isHealthy = await checkConnection();
+    if (!isHealthy) {
+      const attempt = backoffCountRef.current;
+      const delay = Math.min(30000, 2000 * Math.pow(1.8, attempt) + Math.random() * 500);
+      backoffCountRef.current = attempt + 1;
+      if (backoffTimeoutRef.current) clearTimeout(backoffTimeoutRef.current);
+      backoffTimeoutRef.current = setTimeout(() => {
+        drainOfflineQueue();
+      }, delay);
+      return;
+    }
+
+    isDrainingRef.current = true;
+    try {
+      for (const item of queued) {
+        if (!isMountedRef.current || activeConversationIdRef.current !== conversationId) break;
+        if (typeof navigator !== 'undefined' && !navigator.onLine) break;
+
+        const success = await executeSend(item.id, item.content, item.replyToId);
+        if (success) {
+          backoffCountRef.current = 0;
+        } else {
+          // Failure encountered: back off before next drain attempt
+          const attempt = backoffCountRef.current;
+          const delay = Math.min(30000, 2500 * Math.pow(1.8, attempt) + Math.random() * 500);
+          backoffCountRef.current = attempt + 1;
+          break;
+        }
+      }
+    } finally {
+      isDrainingRef.current = false;
+    }
+  }, [conversationId, currentUserId, checkConnection, executeSend]);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      drainOfflineQueue();
+    };
+    window.addEventListener('online', handleOnline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      if (backoffTimeoutRef.current) {
+        clearTimeout(backoffTimeoutRef.current);
+      }
+    };
+  }, [drainOfflineQueue]);
+
+  // ── Send message handler ──────────────────────────────────────────────────
+  const handleSend = useCallback(
+    async (content: string, replyToId?: string | null) => {
+      const nonce =
+        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID().slice(0, 8)
+          : Math.random().toString(36).slice(2, 8);
+      const tempId = `temp_${Date.now()}_${nonce}`;
+
+      const originalMsg = replyToId ? messagesRef.current.find((m) => m.id === replyToId) : null;
+      const replyData = originalMsg
+        ? {
+            id: originalMsg.id,
+            content: originalMsg.content,
+            sender_id: originalMsg.sender_id,
+            sender_name: originalMsg.sender_id === currentUserId ? 'You' : participantName,
+          }
+        : null;
+
+      const optimisticMsg: MessageWithReactions = {
+        id: tempId,
+        conversation_id: conversationId,
+        sender_id: currentUserId,
+        content,
+        type: 'text',
+        status: 'sending',
+        reply_to_id: replyToId || null,
+        edited_at: null,
+        deleted_at: null,
+        created_at: new Date().toISOString(),
+        reply_to: replyData,
+        message_reactions: [],
+      };
+
+      // Optimistically add to message state immediately
+      setMessages((prev) => [...prev, optimisticMsg]);
+      setReplyingTo(null);
+
+      // Persist to durable IndexedDB immediately (immune to page reload or browser crash)
+      await enqueueOfflineMessage({
+        id: tempId,
+        userId: currentUserId,
+        conversationId,
+        content,
+        replyToId: replyToId || null,
+        replyTo: replyData,
+        createdAt: optimisticMsg.created_at,
+        status: 'sending',
+        retryCount: 0,
+      });
+
+      // If browser is currently offline, it is already safely queued and will drain upon reconnection
+      const isDeviceOffline = typeof navigator !== 'undefined' && !navigator.onLine;
+      if (isDeviceOffline) {
+        return;
+      }
+
+      await executeSend(tempId, content, replyToId || null);
+    },
+    [conversationId, currentUserId, participantName, executeSend]
+  );
+
+  // ── Retry failed message handler ──────────────────────────────────────────
+  const handleRetryMessage = useCallback(
+    async (failedMsg: MessageWithReactions) => {
+      const tempId = failedMsg.id;
+
+      // Mark as sending again in UI
+      setMessages((prev) =>
+        prev.map((m) => (m.id === tempId ? { ...m, status: 'sending', failedError: undefined } : m))
+      );
+
+      await updateOfflineMessage(tempId, {
+        status: 'sending',
+        failedError: undefined,
+      });
+
+      const isDeviceOffline = typeof navigator !== 'undefined' && !navigator.onLine;
+      if (isDeviceOffline) {
+        return;
+      }
+
+      await executeSend(tempId, failedMsg.content, failedMsg.reply_to_id || null);
+    },
+    [executeSend]
+  );
+
+  const handleDismissFailedMessage = useCallback(async (tempId: string) => {
     setMessages((prev) => prev.filter((m) => m.id !== tempId));
+    await removeOfflineMessage(tempId);
   }, []);
 
   const cleanQuery = searchQuery.trim().toLowerCase();

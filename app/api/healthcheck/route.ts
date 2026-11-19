@@ -11,10 +11,16 @@ export const runtime = 'nodejs';
 export async function GET() {
   let supabaseStatus = 'unconfigured';
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (url) {
     try {
+      const headers: Record<string, string> = {};
+      if (anonKey) {
+        headers['apikey'] = anonKey;
+      }
       const res = await fetch(`${url}/auth/v1/health`, {
+        headers,
         signal: AbortSignal.timeout(2500),
       });
       supabaseStatus = res.ok ? 'connected' : 'reachable_degraded';

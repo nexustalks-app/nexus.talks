@@ -112,6 +112,9 @@ let memoryConversationsCache: { userId: string; items: ConversationItemData[] } 
 // Tracks whether remote Supabase schema supports is_pinned / pinned_at columns (migration 016)
 let dbPinsSupported: boolean | null = null;
 
+import { clearUserDrafts } from '@/lib/offline/draft-store';
+import { clearUserOfflineQueue } from '@/lib/offline/offline-store';
+
 export function clearConversationListCache() {
   memoryConversationsCache = null;
 }
@@ -122,8 +125,14 @@ if (typeof window !== 'undefined') {
     const sb = createClient();
     sb.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
+        if (memoryConversationsCache?.userId) {
+          clearUserDrafts(memoryConversationsCache.userId);
+          clearUserOfflineQueue(memoryConversationsCache.userId);
+        }
         clearConversationListCache();
       } else if (session?.user && memoryConversationsCache && memoryConversationsCache.userId !== session.user.id) {
+        clearUserDrafts(memoryConversationsCache.userId);
+        clearUserOfflineQueue(memoryConversationsCache.userId);
         clearConversationListCache();
       }
     });

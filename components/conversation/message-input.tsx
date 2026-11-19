@@ -6,6 +6,11 @@ import { cn } from '@/lib/utils/cn';
 import { useSettings } from '@/lib/settings/settings-context';
 import { createClient } from '@/lib/supabase/client';
 import { broadcastTyping } from '@/lib/realtime/typing-channel';
+import { useNetworkStatus } from '@/lib/network/network-status';
+import { getDraft, saveDraft, removeDraft } from '@/lib/offline/draft-store';
+
+export const MAX_MESSAGE_LENGTH = 4000;
+export const WARN_CHAR_THRESHOLD = 3500;
 
 export interface ReplyingTo {
   id: string;
@@ -41,13 +46,26 @@ export function MessageInput({
   editingMessage,
   onCancelEdit,
 }: MessageInputProps) {
-  const [text, setText] = useState('');
+  const [text, setText] = useState(() => {
+    return getDraft(currentUserId, conversationId);
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [failedDraft, setFailedDraft] = useState<string | null>(null);
   const draftBackupRef = useRef<string>('');
   const textRef = useRef<string>(text);
   textRef.current = text;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const lastSubmitTsRef = useRef<number>(0);
   const { settings } = useSettings();
+  const { isOnline } = useNetworkStatus();
+
+  // Restore persisted draft when switching conversations
+  useEffect(() => {
+    if (editingMessage) return;
+    const saved = getDraft(currentUserId, conversationId);
+    setText(saved);
+    textRef.current = saved;
+  }, [conversationId, currentUserId, editingMessage]);
 
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastTypingEmittedRef = useRef<number>(0);
@@ -76,6 +94,9 @@ export function MessageInput({
     setText(val);
 
     if (conversationId && currentUserId) {
+      if (!editingMessage) {
+        saveDraft(currentUserId, conversationId, val);
+      }
       const trimmed = val.trim();
       const supabase = createClient();
       if (trimmed.length > 0) {
@@ -140,12 +161,16 @@ export function MessageInput({
   }, [onCancelEdit]);
 
   const canSubmit = editingMessage
-    ? text.trim().length > 0 && !isSubmitting && !disabled && text.trim() !== editingMessage.content
-    : text.trim().length > 0 && !isSubmitting && !disabled;
+    ? text.trim().length > 0 && text.trim().length <= MAX_MESSAGE_LENGTH && !isSubmitting && !disabled && text.trim() !== editingMessage.content
+    : text.trim().length > 0 && text.trim().length <= MAX_MESSAGE_LENGTH && !isSubmitting && !disabled;
 
   const handleSubmit = async () => {
     const trimmed = text.trim();
-    if (!trimmed || isSubmitting || disabled) return;
+    if (!trimmed || isSubmitting || disabled || trimmed.length > MAX_MESSAGE_LENGTH) return;
+
+    const now = Date.now();
+    if (now - lastSubmitTsRef.current < 350) return;
+    lastSubmitTsRef.current = now;
 
     // Immediately stop typing indicator on message submission
     stopTyping();
@@ -162,13 +187,20 @@ export function MessageInput({
         // Restore previous typing draft upon successful save
         setText(draftBackupRef.current);
         draftBackupRef.current = '';
+      } catch (err) {
+        console.error('[MessageInput] Failed to save edit:', err);
       } finally {
         setIsSubmitting(false);
         textareaRef.current?.focus();
       }
     } else {
+      setIsSubmitting(true);
+      const draftToSend = trimmed;
       // Clear composer draft immediately for instant feedback
       setText('');
+      if (conversationId && currentUserId) {
+        removeDraft(currentUserId, conversationId);
+      }
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
         textareaRef.current.focus();
@@ -176,8 +208,13 @@ export function MessageInput({
 
       // Dispatch send (optimistic update runs synchronously in 0ms)
       try {
-        await onSend(trimmed, replyingTo?.id || null);
+        await onSend(draftToSend, replyingTo?.id || null);
+        setFailedDraft(null);
+      } catch (err) {
+        console.error('[MessageInput] Send error caught:', err);
+        setFailedDraft(draftToSend);
       } finally {
+        setIsSubmitting(false);
         // Strictly retain focus so user can type multiple consecutive messages
         textareaRef.current?.focus();
       }
@@ -272,6 +309,33 @@ export function MessageInput({
           </div>
         )}
 
+        {/* ── Unsent Draft Recovery Notice ───────────────────────────────────── */}
+        {failedDraft && !text && (
+          <div className="mb-2.5 flex items-center justify-between gap-3 rounded-xl border border-rose-300/40 bg-rose-500/10 px-3.5 py-2 text-xs text-rose-800 dark:text-rose-200 shadow-xs nx-banner-enter">
+            <p className="truncate">A previous message could not be sent.</p>
+            <div className="flex items-center gap-3 shrink-0 font-medium">
+              <button
+                type="button"
+                onClick={() => {
+                  setText(failedDraft);
+                  setFailedDraft(null);
+                }}
+                className="underline hover:text-rose-950 dark:hover:text-white active:scale-95 transition-transform"
+              >
+                Restore draft
+              </button>
+              <button
+                type="button"
+                onClick={() => setFailedDraft(null)}
+                aria-label="Dismiss draft notice"
+                className="text-rose-600 hover:text-rose-900 dark:text-rose-300"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* ── Reference Bottom Composer Row ─────────────────────────────────── */}
         <div className="flex items-center gap-2">
           {/* Main Input Pill */}
@@ -296,11 +360,14 @@ export function MessageInput({
               onChange={handleTextChange}
               onBlur={stopTyping}
               onKeyDown={handleKeyDown}
+              maxLength={MAX_MESSAGE_LENGTH}
               placeholder={
                 editingMessage
                   ? 'Edit message…'
                   : replyingTo
                   ? `Reply to ${replyingTo.senderName}…`
+                  : !isOnline
+                  ? 'Send a message (queued offline)...'
                   : 'Send a message...'
               }
               aria-label={
@@ -320,6 +387,21 @@ export function MessageInput({
                 'max-h-[140px] py-0.5',
               )}
             />
+
+            {/* Character warning badge when approaching limit */}
+            {text.length >= WARN_CHAR_THRESHOLD && (
+              <span
+                className={cn(
+                  'text-[10px] font-mono px-1.5 py-0.5 rounded shrink-0 transition-colors',
+                  text.length >= MAX_MESSAGE_LENGTH
+                    ? 'text-rose-600 dark:text-rose-400 font-bold bg-rose-50 dark:bg-rose-950/40'
+                    : 'text-muted dark:text-[#8e8a91]'
+                )}
+                title={`${text.length} of ${MAX_MESSAGE_LENGTH} characters`}
+              >
+                {text.length}/{MAX_MESSAGE_LENGTH}
+              </span>
+            )}
           </div>
 
           {/* Calendar Utility Button */}

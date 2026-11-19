@@ -27,6 +27,8 @@ import { useSettings } from '@/lib/settings/settings-context';
 import { useCommand } from '@/lib/command/command-context';
 import { clearConversationListCache } from '@/components/conversation/conversation-list';
 import { clearProfileCache } from '@/components/profile/use-profile';
+import { clearUserDrafts } from '@/lib/offline/draft-store';
+import { clearUserOfflineQueue } from '@/lib/offline/offline-store';
 import { CreateActionSheet } from './create-action-sheet';
 
 interface SidebarProps {
@@ -64,6 +66,8 @@ export function Sidebar({ user, profile }: SidebarProps) {
   const handleLogout = async () => {
     clearConversationListCache();
     clearProfileCache();
+    clearUserDrafts(user.id);
+    clearUserOfflineQueue(user.id);
     const supabase = createClient();
     await supabase
       .from('profiles')
